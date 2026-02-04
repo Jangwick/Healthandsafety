@@ -58,13 +58,12 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .brand-logo {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     text-decoration: none;
 }
 
@@ -75,16 +74,21 @@
     transition: transform 0.25s ease;
 }
 
+.brand-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0b132b;          /* Dark navy from screenshot */
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
 /* Mobile adjustments */
 @media (max-width: 768px) {
     .logo-img {
-        height: 80px;          /* smaller on tablets */
+        height: 40px;
     }
-}
-
-@media (max-width: 480px) {
-    .logo-img {
-        height: 70px;          /* smaller on phones */
+    .brand-name {
+        font-size: 1.1rem;
     }
 }
 

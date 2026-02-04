@@ -17,7 +17,7 @@
     <div class="sidebar-header">
         <div class="sidebar-brand">
             <div class="brand-logo">
-                <img src="/images/logo.svg" alt="" class="logo-img">
+                <img src="/images/logo.svg" alt="LGU Logo" class="logo-img">
             </div>
             <span class="brand-name">H&S LGU</span>
         </div>
@@ -132,6 +132,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // can trigger the sidebar without duplicating logic.
     window.sidebarToggle = toggleSidebar;
     window.sidebarClose = closeSidebar;
+
+    // Connect to header toggle button if it exists
+    const headerToggle = document.getElementById('menuToggle');
+    if (headerToggle) {
+        headerToggle.addEventListener('click', toggleSidebar);
+    }
     
     // Close sidebar when clicking overlay
     if (sidebarOverlay) {
