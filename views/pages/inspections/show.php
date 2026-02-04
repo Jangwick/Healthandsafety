@@ -63,15 +63,18 @@
                 <table class="table table-hover mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th class="ps-4">Requirement ID</th>
-                            <th>Result</th>
-                            <th>Status</th>
+                            <th class="ps-4">Requirement / Regulation</th>
+                            <th style="width: 150px;">Result</th>
+                            <th style="width: 200px;">Compliance Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($results as $item): ?>
                             <tr>
-                                <td class="ps-4">Item #<?= htmlspecialchars($item['checklist_item_id']) ?></td>
+                                <td class="ps-4">
+                                    <div class="fw-600" style="font-weight: 600;"><?= htmlspecialchars($item['requirement_text']) ?></div>
+                                    <small class="text-muted">ID: #<?= htmlspecialchars($item['checklist_item_id']) ?></small>
+                                </td>
                                 <td>
                                     <span class="badge badge-<?= $item['result'] === 'Pass' ? 'success' : 'danger' ?>">
                                         <?= $item['result'] ?>
@@ -79,9 +82,9 @@
                                 </td>
                                 <td>
                                     <?php if ($item['result'] === 'Pass'): ?>
-                                        <i class="fas fa-check-circle text-success"></i> Compliant
+                                        <i class="fas fa-check-circle text-success" style="color: #10b981;"></i> Compliant
                                     <?php else: ?>
-                                        <i class="fas fa-times-circle text-danger"></i> Non-Compliant
+                                        <i class="fas fa-times-circle text-danger" style="color: #ef4444;"></i> Non-Compliant
                                     <?php endif; ?>
                                 </td>
                             </tr>

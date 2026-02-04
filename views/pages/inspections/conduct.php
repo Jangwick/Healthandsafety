@@ -1,3 +1,22 @@
+<style>
+    .pass-input:checked + .pass-btn {
+        background: #10b981 !important;
+        color: white !important;
+        border-color: #10b981 !important;
+        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4);
+    }
+    .fail-input:checked + .fail-btn {
+        background: #ef4444 !important;
+        color: white !important;
+        border-color: #ef4444 !important;
+        box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.4);
+    }
+    .check-button:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+</style>
+
 <div class="row" style="max-width: 900px; margin: 0 auto;">
     <div class="col-12">
         <form action="/inspections/process" method="POST">
@@ -50,15 +69,15 @@
                                     <div style="display: flex; gap: 0.5rem;">
                                         <!-- Pass Button (Radio Style) -->
                                         <label style="cursor: pointer;">
-                                            <input type="radio" name="items[<?= $item['id'] ?>]" value="1" required style="display: none;" class="check-input">
-                                            <div class="check-button pass" style="padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
+                                            <input type="radio" name="items[<?= $item['id'] ?>]" value="Pass" required style="display: none;" class="check-input pass-input">
+                                            <div class="check-button pass-btn" style="padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
                                                 <i class="fas fa-check"></i> PASS
                                             </div>
                                         </label>
                                         <!-- Fail Button (Radio Style) -->
                                         <label style="cursor: pointer;">
-                                            <input type="radio" name="items[<?= $item['id'] ?>]" value="0" required style="display: none;" class="check-input">
-                                            <div class="check-button fail" style="padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
+                                            <input type="radio" name="items[<?= $item['id'] ?>]" value="Fail" required style="display: none;" class="check-input fail-input">
+                                            <div class="check-button fail-btn" style="padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
                                                 <i class="fas fa-times"></i> FAIL
                                             </div>
                                         </label>

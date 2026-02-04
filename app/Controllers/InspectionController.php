@@ -153,7 +153,7 @@ class InspectionController extends BaseController
 
         $db = Database::getInstance();
         $stmt = $db->prepare("
-            SELECT i.*, e.name as business_name, e.location, t.category as template_name, u.full_name as inspector_name
+            SELECT i.*, e.name as business_name, e.location, t.category as template_name, t.items_json, u.full_name as inspector_name
             FROM inspections i 
             JOIN establishments e ON i.establishment_id = e.id
             JOIN checklist_templates t ON i.template_id = t.id
@@ -161,7 +161,7 @@ class InspectionController extends BaseController
             WHERE i.id = ?
         ");
         $stmt->execute([$id]);
-        $inspection = $stmt->fetch(PDO::FETCH_ASSOC);
+        $inspection = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$inspection) {
             header('Location: /inspections?error=Inspection not found');
@@ -171,12 +171,28 @@ class InspectionController extends BaseController
         // Get inspection items
         $stmt = $db->prepare("SELECT * FROM inspection_items WHERE inspection_id = ?");
         $stmt->execute([$id]);
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Decode template items for better display
+        $templateItems = json_decode($inspection['items_json'] ?? '[]', true);
+        $mappedResults = [];
+        foreach ($results as $res) {
+            // Find the text in templateItems using id
+            $text = "Requirement #" . $res['checklist_item_id'];
+            foreach ($templateItems as $item) {
+                if ((string)$item['id'] === (string)$res['checklist_item_id']) {
+                    $text = $item['text'] ?? $item['description'] ?? $text;
+                    break;
+                }
+            }
+            $res['requirement_text'] = $text;
+            $mappedResults[] = $res;
+        }
 
         ob_start();
         $this->view('pages/inspections/show', [
             'inspection' => $inspection,
-            'results' => $results
+            'results' => $mappedResults
         ]);
         $content = ob_get_clean();
 
@@ -243,9 +259,9 @@ class InspectionController extends BaseController
             } 
             // 5. Auto-generate Certificate if score >= 75
             else {
-                $stmt = $db->prepare("INSERT INTO certificates (establishment_id, type, certificate_number, issue_date, expiry_date) VALUES (?, ?, ?, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 YEAR))");
+                $stmt = $db->prepare("INSERT INTO certificates (establishment_id, inspection_id, type, certificate_number, issue_date, expiry_date) VALUES (?, ?, ?, ?, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 YEAR))");
                 $certNum = "CERT-" . date('Y') . "-" . str_pad((string)$inspectionId, 5, '0', STR_PAD_LEFT);
-                $stmt->execute([$establishmentId, 'Sanitary Clearance', $certNum]);
+                $stmt->execute([$establishmentId, $inspectionId, 'Sanitary Clearance', $certNum]);
             }
 
             $db->commit();
