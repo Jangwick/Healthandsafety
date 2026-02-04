@@ -77,7 +77,7 @@
 .brand-name {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #0b132b;          /* Dark navy from screenshot */
+    color: var(--sidebar-text-1);
     letter-spacing: -0.02em;
     white-space: nowrap;
 }

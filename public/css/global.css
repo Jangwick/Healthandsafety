@@ -10,6 +10,7 @@
     --text-secondary-1: #575757;
     --bg-color-1: #ffffff;
     --header-bg-1: #ffffff;
+    --header-bg-1-rgb: 255, 255, 255;
     --footer-bg-1: #fafafa;
     --nav-text-1: #171717;
     --border-color-1: #e5e5e5;
@@ -24,11 +25,12 @@
     --text-secondary-1: #a1a1aa;
     --bg-color-1: #000000;
     --header-bg-1: #0a0a0a;
+    --header-bg-1-rgb: 10, 10, 10;
     --footer-bg-1: #0a0a0a;
     --nav-text-1: #fafafa;
-    --border-color-1: #27272a;
+    --border-color-1: #1a1a1a;
     --card-bg-1: #0a0a0a;
-    --shadow-1: rgba(0, 0, 0, 0.2);
+    --shadow-1: rgba(0, 0, 0, 0.4);
 }
 
 /* ===================================

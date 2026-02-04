@@ -77,7 +77,7 @@
         <div class="table-container" style="border: none; box-shadow: none;">
             <table class="datatable" style="width: 100%; border-collapse: collapse;">
                 <thead>
-                    <tr style="background: rgba(0,0,0,0.02);">
+                    <tr style="background: rgba(var(--header-bg-1-rgb), 0.05);">
                         <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Establishment Name</th>
                         <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Category</th>
                         <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Date Scheduled</th>
@@ -97,7 +97,7 @@
                         </tr>
                     <?php else: ?>
                         <?php foreach ($recent_inspections as $insp): ?>
-                        <tr style="border-bottom: 1px solid var(--border-color-1); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.01)'" onmouseout="this.style.background='transparent'">
+                        <tr style="border-bottom: 1px solid var(--border-color-1); transition: background 0.2s;" onmouseover="this.style.background='rgba(var(--primary-color-1-rgb, 76, 138, 137), 0.05)'" onmouseout="this.style.background='transparent'">
                             <td style="padding: 1rem 1.5rem;">
                                 <div style="display: flex; align-items: center;">
                                     <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(76, 138, 137, 0.1); color: var(--primary-color-1); display: flex; align-items: center; justify-content: center; margin-right: 1rem;">

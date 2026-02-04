@@ -33,17 +33,38 @@ class ThemeManager {
         this.currentTheme = theme;
         this.setStoredTheme(theme);
         this.updateActiveButton();
+        this.updateHeaderIcon();
+    }
+
+    updateHeaderIcon() {
+        const singleToggle = document.getElementById('themeToggleBtn');
+        if (singleToggle) {
+            const icon = singleToggle.querySelector('i');
+            if (icon) {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
     }
 
     setupEventListeners() {
-        // Theme toggle buttons
-        const themeButtons = document.querySelectorAll('.theme-toggle-btn');
+        // Theme toggle buttons (multi-button setup)
+        const themeButtons = document.querySelectorAll('.theme-toggle .theme-toggle-btn');
         themeButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 const theme = e.currentTarget.getAttribute('data-theme');
                 this.applyTheme(theme);
             });
         });
+
+        // Single toggle button (usually in header)
+        const singleToggle = document.getElementById('themeToggleBtn');
+        if (singleToggle) {
+            singleToggle.addEventListener('click', () => {
+                const newTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+                this.applyTheme(newTheme);
+            });
+        }
 
         // Listen for system theme changes
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');

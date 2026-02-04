@@ -28,7 +28,7 @@
         <div class="header-actions">
             <!-- Theme Toggle -->
             <div class="notification-item">
-                <button class="notification-btn theme-toggle-btn" data-theme="dark" id="themeToggleBtn" aria-label="Toggle Theme">
+                <button class="notification-btn theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Theme">
                     <i class="fas fa-moon"></i>
                 </button>
             </div>
