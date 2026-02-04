@@ -71,4 +71,23 @@ class CertificateController extends BaseController
             'content' => $content
         ]);
     }
+
+    public function revoke(): void
+    {
+        $this->auth->handle();
+        $id = (int)($_POST['id'] ?? 0);
+
+        if ($id <= 0) {
+            header('Location: /certificates?error=Invalid certificate ID');
+            exit;
+        }
+
+        $stmt = $this->db->prepare("UPDATE certificates SET status = 'Revoked' WHERE id = ?");
+        if ($stmt->execute([$id])) {
+            header('Location: /certificates?success=Certificate revoked successfully');
+        } else {
+            header('Location: /certificates?error=Failed to revoke certificate');
+        }
+        exit;
+    }
 }

@@ -9,6 +9,7 @@ use App\Controllers\AuthController;
 use App\Controllers\ViolationController;
 use App\Controllers\CertificateController;
 use App\Controllers\UserController;
+use App\Controllers\SettingsController;
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
@@ -54,6 +55,8 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new CertificateController())->index();
 } elseif ($requestUri === '/certificates/show') {
     (new CertificateController())->show((int)($_GET['id'] ?? 0));
+} elseif ($requestUri === '/certificates/revoke' && $method === 'POST') {
+    (new CertificateController())->revoke();
 } elseif ($requestUri === '/users') {
     (new UserController())->index();
 } elseif ($requestUri === '/users/create') {
@@ -66,6 +69,10 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new UserController())->update();
 } elseif ($requestUri === '/users/delete') {
     (new UserController())->delete();
+} elseif ($requestUri === '/settings') {
+    (new SettingsController())->index();
+} elseif ($requestUri === '/settings/update' && $method === 'POST') {
+    (new SettingsController())->update();
 } elseif ($requestUri === '/login') {
     if ($method === 'POST') {
         (new AuthController())->login();

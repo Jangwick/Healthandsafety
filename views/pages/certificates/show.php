@@ -1,12 +1,18 @@
-<div class="certificate-container" style="background: white; border: 15px double #1a237e; padding: 50px; max-width: 800px; margin: 0 auto; position: relative;">
-    <div class="text-center mb-5">
+<div class="certificate-container" style="background: white; border: 15px double <?= $certificate['status'] === 'Revoked' ? '#d32f2f' : '#1a237e' ?>; padding: 50px; max-width: 800px; margin: 0 auto; position: relative; overflow: hidden;">
+    <?php if ($certificate['status'] === 'Revoked'): ?>
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 8rem; color: rgba(211, 47, 47, 0.2); font-weight: bold; pointer-events: none; z-index: 0; text-transform: uppercase;">
+            REVOKED
+        </div>
+    <?php endif; ?>
+
+    <div class="text-center mb-5" style="position: relative; z-index: 1;">
         <img src="/images/logo.svg" alt="LGU Logo" style="width: 100px; margin-bottom: 20px;">
         <h4 style="text-transform: uppercase; color: #1a237e; margin: 0;">Republic of the Philippines</h4>
         <h2 style="text-transform: uppercase; margin: 10px 0; color: #1a237e;">Sanitary Clearance</h2>
         <p class="text-muted">Office of the City Health Officer</p>
     </div>
 
-    <div class="certificate-body text-center" style="margin-top: 40px;">
+    <div class="certificate-body text-center" style="margin-top: 40px; position: relative; z-index: 1;">
         <p style="font-size: 1.2rem;">This is to certify that</p>
         <h1 style="font-family: 'Times New Roman', serif; border-bottom: 2px solid #333; display: inline-block; margin: 20px 0; padding: 0 50px;">
             <?= htmlspecialchars($certificate['establishment_name']) ?>
@@ -21,7 +27,7 @@
         </p>
     </div>
 
-    <div class="row mt-5 pt-4">
+    <div class="row mt-5 pt-4" style="position: relative; z-index: 1;">
         <div class="col-6 text-center">
             <div style="border-top: 1px solid #333; width: 200px; margin: 0 auto; padding-top: 5px;">
                 <strong><?= date('M d, Y', strtotime($certificate['issue_date'])) ?></strong><br>
@@ -36,16 +42,26 @@
         </div>
     </div>
 
-    <div class="certificate-footer text-center mt-5">
+    <div class="certificate-footer text-center mt-5" style="position: relative; z-index: 1;">
         <p class="mb-0">Certificate Number:</p>
         <h4 style="color: #1a237e;"><?= $certificate['certificate_number'] ?></h4>
+        <?php if ($certificate['status'] === 'Revoked'): ?>
+            <h5 class="text-danger mt-3">THIS CERTIFICATE HAS BEEN REVOKED</h5>
+        <?php endif; ?>
     </div>
 </div>
 
 <div class="text-center mt-4 no-print">
-    <button onclick="window.print()" class="btn btn-lg btn-primary">
-        <i class="fas fa-print"></i> Print Certificate
-    </button>
+    <?php if ($certificate['status'] !== 'Revoked'): ?>
+        <button onclick="window.print()" class="btn btn-lg btn-primary">
+            <i class="fas fa-print"></i> Print Certificate
+        </button>
+    <?php else: ?>
+        <div class="alert alert-danger d-inline-block">
+            <i class="fas fa-exclamation-triangle"></i> This certificate is revoked and cannot be printed as a valid document.
+        </div>
+    <?php endif; ?>
+    <a href="/certificates" class="btn btn-lg btn-secondary">Back to List</a>
 </div>
 
 <style>
