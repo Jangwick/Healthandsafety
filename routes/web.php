@@ -24,6 +24,12 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new EstablishmentController())->store();
 } elseif ($requestUri === '/establishments/show') {
     (new EstablishmentController())->show((int)($_GET['id'] ?? 0));
+} elseif ($requestUri === '/establishments/edit') {
+    (new EstablishmentController())->edit((int)($_GET['id'] ?? 0));
+} elseif ($requestUri === '/establishments/update' && $method === 'POST') {
+    (new EstablishmentController())->update();
+} elseif ($requestUri === '/establishments/delete') {
+    (new EstablishmentController())->delete();
 } elseif ($requestUri === '/inspections') {
     (new InspectionController())->index();
 } elseif ($requestUri === '/inspections/create') {

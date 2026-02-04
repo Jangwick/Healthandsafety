@@ -17,6 +17,13 @@
     </div>
     
     <div class="card-body" style="padding: 0;">
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert alert-success m-3"><?= htmlspecialchars($_GET['success']) ?></div>
+        <?php endif; ?>
+        <?php if (isset($_GET['error'])): ?>
+            <div class="alert alert-danger m-3"><?= htmlspecialchars($_GET['error']) ?></div>
+        <?php endif; ?>
+
         <div class="table-container" style="border: none; box-shadow: none; margin: 0;">
             <table class="datatable" style="width: 100%; border-collapse: collapse;">
                 <thead>
@@ -63,11 +70,17 @@
                             </td>
                             <td style="padding: 1.25rem 1.5rem; text-align: right;">
                                 <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                    <a href="/establishments/show?id=<?= $est['id'] ?>" class="btn btn-sm" style="background: rgba(0,0,0,0.05); color: var(--text-color-1); border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.1)'" onmouseout="this.style.background='rgba(0,0,0,0.05)'">
+                                    <a href="/establishments/show?id=<?= $est['id'] ?>" class="btn btn-sm" style="background: rgba(0,0,0,0.05); color: var(--text-color-1); border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.1)'" onmouseout="this.style.background='rgba(0,0,0,0.05)'" title="View Details">
                                         <i class="fas fa-eye"></i> Details
                                     </a>
-                                    <a href="/inspections/create?establishment_id=<?= $est['id'] ?>" class="btn btn-sm btn-success" style="padding: 6px 12px; border-radius: 6px; font-weight: 600;">
+                                    <a href="/establishments/edit?id=<?= $est['id'] ?>" class="btn btn-sm" style="background: rgba(0,0,0,0.05); color: var(--text-color-1); border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.1)'" onmouseout="this.style.background='rgba(0,0,0,0.05)'" title="Edit Establishment">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/inspections/create?establishment_id=<?= $est['id'] ?>" class="btn btn-sm btn-success" style="padding: 6px 12px; border-radius: 6px; font-weight: 600;" title="Schedule Inspection">
                                         <i class="fas fa-clipboard-check"></i> Inspect
+                                    </a>
+                                    <a href="/establishments/delete?id=<?= $est['id'] ?>" class="btn btn-sm btn-outline-danger" style="padding: 6px 12px; border-radius: 6px; font-weight: 600;" onclick="return confirm('Are you sure you want to delete this establishment?')" title="Delete Establishment">
+                                        <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
                             </td>

@@ -97,7 +97,67 @@ class EstablishmentController extends BaseController
                                    VALUES (?, ?, ?, ?, ?, ST_GeomFromText('POINT(121.0 14.0)'))");
         $stmt->execute([$data['name'], $data['type'], $data['location'], $data['status'], $data['contact_json']]);
 
-        header('Location: /establishments');
+        header('Location: /establishments?success=Establishment registered');
+        exit;
+    }
+
+    public function edit(int $id): void
+    {
+        $user = $this->auth->handle();
+        $establishment = $this->model->find($id);
+
+        if (!$establishment) {
+            header('Location: /establishments?error=Establishment not found');
+            exit;
+        }
+
+        ob_start();
+        $this->view('pages/establishments/edit', ['establishment' => $establishment]);
+        $content = ob_get_clean();
+
+        $this->view('layouts/main', [
+            'pageTitle' => 'Edit Establishment',
+            'pageHeading' => 'Update Establishment',
+            'breadcrumb' => ['Establishments' => '/establishments', 'Edit' => '#'],
+            'content' => $content
+        ]);
+    }
+
+    public function update(): void
+    {
+        $user = $this->auth->handle();
+        $id = (int)($_POST['id'] ?? 0);
+
+        $data = [
+            'name' => $_POST['name'] ?? '',
+            'type' => $_POST['type'] ?? '',
+            'location' => $_POST['location'] ?? '',
+            'status' => $_POST['status'] ?? 'Active',
+            'contact_json' => json_encode([
+                'phone' => $_POST['phone'] ?? '',
+                'email' => $_POST['email'] ?? '',
+                'owner' => $_POST['owner'] ?? ''
+            ])
+        ];
+
+        if ($this->model->update($id, $data)) {
+            header('Location: /establishments?success=Establishment updated');
+        } else {
+            header('Location: /establishments/edit?id=' . $id . '&error=Update failed');
+        }
+        exit;
+    }
+
+    public function delete(): void
+    {
+        $user = $this->auth->handle();
+        $id = (int)($_GET['id'] ?? 0);
+
+        if ($this->model->delete($id)) {
+            header('Location: /establishments?success=Establishment deleted');
+        } else {
+            header('Location: /establishments?error=Delete failed');
+        }
         exit;
     }
 }
