@@ -71,11 +71,11 @@
     <form method="GET" action="/violations" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 250px;">
             <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary-1); text-transform: uppercase; margin-bottom: 0.5rem;">Search Establishment</label>
-            <input type="text" name="search" class="textfield" placeholder="Type establishment name..." value="<?= htmlspecialchars($currentSearch ?? '') ?>" style="width: 100%;">
+            <input type="text" name="search" class="form-control" placeholder="Type establishment name..." value="<?= htmlspecialchars($currentSearch ?? '') ?>">
         </div>
         <div style="width: 200px;">
             <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary-1); text-transform: uppercase; margin-bottom: 0.5rem;">Status</label>
-            <select name="status" class="textfield" style="width: 100%; height: 42px;">
+            <select name="status" class="form-control">
                 <option value="">All Statuses</option>
                 <option value="Pending" <?= ($currentStatus ?? '') === 'Pending' ? 'selected' : '' ?>>Pending</option>
                 <option value="In Progress" <?= ($currentStatus ?? '') === 'In Progress' ? 'selected' : '' ?>>In Progress</option>
@@ -84,10 +84,10 @@
             </select>
         </div>
         <div style="display: flex; gap: 0.5rem;">
-            <button type="submit" class="btn btn-primary" style="height: 42px; display: flex; align-items: center; gap: 0.5rem; padding: 0 1.5rem;">
+            <button type="submit" class="btn btn-primary" style="height: 48px; display: flex; align-items: center; gap: 0.5rem; padding: 0 1.5rem;">
                 <i class="fas fa-filter"></i> Apply Filter
             </button>
-            <a href="/violations" class="btn btn-outline-secondary" style="height: 42px; display: flex; align-items: center; justify-content: center; padding: 0 1rem; text-decoration: none; border: 1px solid var(--border-color-1); color: var(--text-color-1);">
+            <a href="/violations" class="btn btn-outline-secondary" style="height: 48px; display: flex; align-items: center; justify-content: center; padding: 0 1rem; text-decoration: none; border: 1px solid var(--border-color-1); color: var(--text-color-1);">
                 Clear
             </a>
         </div>
