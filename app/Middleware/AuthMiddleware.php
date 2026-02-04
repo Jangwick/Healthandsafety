@@ -15,27 +15,22 @@ class AuthMiddleware
         $this->auth = new AuthService();
     }
 
-    public function handle(): ?array
+    public function handle(): array
     {
-        $token = $_COOKIE['jwt_token'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        
-        if ($token && str_starts_with($token, 'Bearer ')) {
-            $token = substr($token, 7);
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
 
-        if (!$token) {
+        if (!isset($_SESSION['user_id'])) {
             header('Location: /login');
             exit;
         }
 
-        $decoded = $this->auth->validateToken($token);
-        
-        if (!$decoded) {
-            header('Location: /login');
-            exit;
-        }
-
-        return $decoded;
+        return $_SESSION['user'] ?? [
+            'id' => $_SESSION['user_id'],
+            'full_name' => 'User',
+            'role' => 'Inspector'
+        ];
     }
 
     public function authorize(array $user, int $minHierarchy): void

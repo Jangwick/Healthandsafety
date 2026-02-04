@@ -13,16 +13,14 @@ class CreateViolationsTable
         $sql = "CREATE TABLE IF NOT EXISTS violations (
             id INT AUTO_INCREMENT PRIMARY KEY,
             inspection_id INT NOT NULL,
-            severity ENUM('Minor', 'Major', 'Critical') NOT NULL,
             description TEXT NOT NULL,
-            status ENUM('Open', 'In Progress', 'Resolved') DEFAULT 'Open',
-            resolution_date TIMESTAMP NULL,
+            fine_amount DECIMAL(10,2) DEFAULT 0.00,
+            status ENUM('Pending', 'Paid', 'Resolved', 'In Progress') DEFAULT 'Pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (inspection_id) REFERENCES inspections(id),
             INDEX (inspection_id),
-            INDEX (status),
-            INDEX (severity)
+            INDEX (status)
         ) ENGINE=InnoDB;";
         
         $db->exec($sql);

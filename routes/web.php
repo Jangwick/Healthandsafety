@@ -6,46 +6,56 @@ use App\Controllers\HomeController;
 use App\Controllers\EstablishmentController;
 use App\Controllers\InspectionController;
 use App\Controllers\AuthController;
+use App\Controllers\ViolationController;
+use App\Controllers\CertificateController;
+use App\Controllers\UserController;
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
 
-switch ($requestUri) {
-    case '/':
-    case '/dashboard':
-        (new HomeController())->index();
-        break;
-        
-    case '/establishments':
-        (new EstablishmentController())->index();
-        break;
-
-    case '/establishments/show':
-        (new EstablishmentController())->show((int)($_GET['id'] ?? 0));
-        break;
-
-    case '/inspections':
-        (new InspectionController())->index();
-        break;
-
-    case '/inspections/create':
-        (new InspectionController())->create();
-        break;
-        
-    case '/login':
-        if ($method === 'POST') {
-            (new AuthController())->login();
-        } else {
-            (new AuthController())->showLogin();
-        }
-        break;
-
-    case '/logout':
-        (new AuthController())->logout();
-        break;
-
-    default:
-        // Handle other routes or 404
-        (new HomeController())->index(); 
-        break;
+// Simple routing logic
+if ($requestUri === '/' || $requestUri === '/dashboard') {
+    (new HomeController())->index();
+} elseif ($requestUri === '/establishments') {
+    (new EstablishmentController())->index();
+} elseif ($requestUri === '/establishments/create') {
+    (new EstablishmentController())->create();
+} elseif ($requestUri === '/establishments/store' && $method === 'POST') {
+    (new EstablishmentController())->store();
+} elseif ($requestUri === '/establishments/show') {
+    (new EstablishmentController())->show((int)($_GET['id'] ?? 0));
+} elseif ($requestUri === '/inspections') {
+    (new InspectionController())->index();
+} elseif ($requestUri === '/inspections/create') {
+    (new InspectionController())->create();
+} elseif ($requestUri === '/inspections/store' && $method === 'POST') {
+    (new InspectionController())->store();
+} elseif ($requestUri === '/inspections/conduct') {
+    (new InspectionController())->conduct();
+} elseif ($requestUri === '/inspections/process' && $method === 'POST') {
+    (new InspectionController())->process();
+} elseif ($requestUri === '/inspections/show') {
+    (new InspectionController())->show();
+} elseif ($requestUri === '/violations') {
+    (new ViolationController())->index();
+} elseif ($requestUri === '/violations/show') {
+    (new ViolationController())->show((int)($_GET['id'] ?? 0));
+} elseif ($requestUri === '/certificates') {
+    (new CertificateController())->index();
+} elseif ($requestUri === '/certificates/show') {
+    (new CertificateController())->show((int)($_GET['id'] ?? 0));
+} elseif ($requestUri === '/users') {
+    (new UserController())->index();
+} elseif ($requestUri === '/login') {
+    if ($method === 'POST') {
+        (new AuthController())->login();
+    } else {
+        (new AuthController())->showLogin();
+    }
+} elseif ($requestUri === '/logout') {
+    (new AuthController())->logout();
+} else {
+    // Basic catch-all
+    (new HomeController())->index();
 }
+

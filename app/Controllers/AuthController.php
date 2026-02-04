@@ -50,8 +50,11 @@ class AuthController extends BaseController
 
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['full_name'];
-            $_SESSION['user_role'] = $user['role_name'];
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'full_name' => $user['full_name'],
+                'role' => $user['role_name']
+            ];
             
             header('Location: /dashboard');
             exit;
