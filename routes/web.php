@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Controllers\HomeController;
+use App\Controllers\EstablishmentController;
+use App\Controllers\InspectionController;
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
