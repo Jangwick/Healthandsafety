@@ -6,6 +6,7 @@
 .admin-footer {
     width: 100%;
     position: relative;
+    margin-top: auto;
     left: 0;
     right: 0;
     background-color: var(--footer-bg-1);
@@ -18,9 +19,8 @@
 /* Inner wrapper keeps content aligned with your page width */
 .footer-bottom {
     width: 100%;
-    max-width: 1600px;      /* Match your main-container width */
-    margin: 0 auto;
-    padding: 0 20px;
+    margin: 0;
+    padding: 0 2rem;
     box-sizing: border-box;
 
     display: flex;

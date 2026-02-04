@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="/css/datatables.css">
     <link rel="stylesheet" href="/css/forms.css">
     <link rel="stylesheet" href="/css/textfield.css">
+    <link rel="stylesheet" href="/css/notification-modal.css">
+    <link rel="stylesheet" href="/css/message-modal.css">
+    <link rel="stylesheet" href="/css/message-content-modal.css">
 </head>
 <body>
     <!-- Include Sidebar Component -->
@@ -26,8 +29,8 @@
     
     <div class="main-content">
         <div class="main-container">
-            <?php if (isset($breadcrumb)): ?>
-                <div class="title">
+            <div class="title">
+                <?php if (isset($breadcrumb)): ?>
                     <nav class="breadcrumb" aria-label="Breadcrumb">
                         <ol class="breadcrumb-list">
                             <li class="breadcrumb-item"><a href="/" class="breadcrumb-link">Home</a></li>
@@ -36,9 +39,9 @@
                             <?php endforeach; ?>
                         </ol>
                     </nav>
-                    <h1><?= htmlspecialchars($pageHeading ?? 'Dashboard') ?></h1>
-                </div>
-            <?php endif; ?>
+                <?php endif; ?>
+                <h1><?= htmlspecialchars($pageHeading ?? 'Dashboard') ?></h1>
+            </div>
             
             <div class="sub-container">
                 <div class="page-content">

@@ -46,8 +46,6 @@ body {
     color: var(--text-color-1);
     transition: background-color 0.3s ease, color 0.3s ease;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -753,11 +751,6 @@ html {
 @media (max-width: 480px) {
     .header-container {
         padding: 0 0.75rem;
-    }
-    
-    .main-content {
-        padding: 0 0.5rem;
-        padding-top: 4.5rem;
     }
     
     .footer-container {

@@ -137,9 +137,9 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--sidebar-text-secondary-1);
-    margin-bottom: 0.75rem;
-    font-style: italic;
+    margin-bottom: 1rem;
     padding: 0 0.75rem;
+    opacity: 0.8;
 }
 
 /* Sidebar Menu */

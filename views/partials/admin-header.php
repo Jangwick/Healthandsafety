@@ -12,10 +12,6 @@
  */
 ?>
 
-<link rel="stylesheet" href="/css/notification-modal.css">
-<link rel="stylesheet" href="/css/message-modal.css">
-<link rel="stylesheet" href="/css/message-content-modal.css">
-
 <!-- Admin Header Component -->
 <header class="admin-header">
     <div class="admin-header-left">
@@ -101,60 +97,11 @@
 </div>
 
 <!-- Notification Modal -->
+<!-- Notification Modal -->
 <div class="notification-modal" id="notificationModal">
     <div class="modal-content">
         <div class="modal-header">
             <h3>Notifications</h3>
-        </div>
-    </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const themeBtn = document.getElementById('themeToggleBtn');
-    const root = document.documentElement;
-    
-    // Check local storage for theme
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    root.setAttribute('data-theme', currentTheme);
-    updateIcon(currentTheme);
-
-    themeBtn.addEventListener('click', () => {
-        const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        root.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateIcon(newTheme);
-    });
-
-    function updateIcon(theme) {
-        const icon = themeBtn.querySelector('i');
-        if (theme === 'dark') {
-            icon.className = 'fas fa-sun';
-            themeBtn.style.color = '#f59e0b';
-        } else {
-            icon.className = 'fas fa-moon';
-            themeBtn.style.color = '';
-        }
-    }
-
-    // Dropdown functionality
-    const profileBtn = document.getElementById('userProfileBtn');
-    const profileDropdown = document.getElementById('userProfileDropdown');
-    
-    if (profileBtn && profileDropdown) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('show');
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (!profileDropdown.contains(e.target)) {
-                profileDropdown.classList.remove('show');
-            }
-        });
-    }
-});
-</script>
             <button class="modal-close" onclick="closeModal('notificationModal')">
                 <i class="fas fa-times"></i>
             </button>
@@ -301,6 +248,37 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 // Admin Header functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Theme Toggle Logic
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
+    
+    // Check for saved theme preference
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateThemeIcon(currentTheme);
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', function() {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let newTheme = theme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+    }
+
+    function updateThemeIcon(theme) {
+        if (!themeIcon) return;
+        if (theme === 'dark') {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        } else {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+    }
+
     const menuToggle = document.getElementById('menuToggle');
     
     // Toggle sidebar from header menu button
