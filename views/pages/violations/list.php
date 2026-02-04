@@ -97,6 +97,9 @@
 <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color-1); background: var(--card-bg-1);">
     <div class="card-header" style="background: transparent; border-bottom: 1px solid var(--border-color-1); padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
         <h3 style="margin: 0; font-size: 1.125rem; font-weight: 600; color: var(--text-color-1);">Violation Records</h3>
+        <a href="/violations/create" class="btn btn-primary" style="font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; text-decoration: none;">
+            <i class="fas fa-plus"></i> Add Violation
+        </a>
     </div>
     <div class="card-body" style="padding: 0;">
         <div class="table-container" style="border: none; box-shadow: none;">
@@ -167,8 +170,14 @@
                                     <a href="/violations/show?id=<?= $violation['id'] ?>" class="btn-icon" title="View Details" style="width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color-1); color: var(--primary-color-1); text-decoration: none;">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    <a href="/violations/edit?id=<?= $violation['id'] ?>" class="btn-icon" title="Edit Record" style="width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color-1); color: #f59e0b; text-decoration: none;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
                                     <a href="/violations/print?id=<?= $violation['id'] ?>" target="_blank" class="btn-icon" title="Print Notice" style="width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color-1); color: var(--text-secondary-1); text-decoration: none;">
                                         <i class="fas fa-print"></i>
+                                    </a>
+                                    <a href="#" onclick="if(confirm('Delete this record?')) window.location.href='/violations/delete?id=<?= $violation['id'] ?>'" class="btn-icon" title="Delete Record" style="width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color-1); color: #ef4444; text-decoration: none;">
+                                        <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
                             </td>

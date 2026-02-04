@@ -242,4 +242,167 @@ class ViolationController extends BaseController
             'failedItems' => $failedItems
         ]);
     }
+
+    public function create(): void
+    {
+        $this->auth->handle();
+        
+        // Fetch inspections that don't have violations yet (optional logic) or all inspections
+        $stmt = $this->db->prepare("
+            SELECT i.id, e.name as establishment_name, i.scheduled_date 
+            FROM inspections i
+            JOIN establishments e ON i.establishment_id = e.id
+            ORDER BY i.scheduled_date DESC
+        ");
+        $stmt->execute();
+        $inspections = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        ob_start();
+        $this->view('pages/violations/create', [
+            'inspections' => $inspections
+        ]);
+        $content = ob_get_clean();
+
+        $this->view('layouts/main', [
+            'pageTitle' => 'Create Violation',
+            'pageHeading' => 'Record New Violation',
+            'breadcrumb' => ['Violations' => '/violations', 'Create' => '#'],
+            'content' => $content
+        ]);
+    }
+
+    public function store(): void
+    {
+        $this->auth->handle();
+        
+        $inspection_id = (int)($_POST['inspection_id'] ?? 0);
+        $description = $_POST['description'] ?? '';
+        $fine_amount = (float)($_POST['fine_amount'] ?? 0);
+        $status = $_POST['status'] ?? 'Pending';
+        $due_date = $_POST['due_date'] ?? null;
+
+        if ($inspection_id > 0 && !empty($description)) {
+            $stmt = $this->db->prepare("
+                INSERT INTO violations (inspection_id, description, fine_amount, status, due_date)
+                VALUES (?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([$inspection_id, $description, $fine_amount, $status, $due_date]);
+            $id = $this->db->lastInsertId();
+
+            // Create Audit Log
+            $stmt = $this->db->prepare("
+                INSERT INTO audit_logs (user_id, action, table_name, record_id, changes_json, ip_address, user_agent)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $_SESSION['user_id'] ?? null,
+                'CREATE',
+                'violations',
+                $id,
+                json_encode(['description' => $description, 'fine_amount' => $fine_amount, 'status' => $status]),
+                $_SERVER['REMOTE_ADDR'] ?? '',
+                $_SERVER['HTTP_USER_AGENT'] ?? ''
+            ]);
+
+            header('Location: /violations?success=Violation recorded successfully');
+        } else {
+            header('Location: /violations/create?error=Please fill in all required fields');
+        }
+        exit;
+    }
+
+    public function edit(int $id): void
+    {
+        $this->auth->handle();
+        
+        $stmt = $this->db->prepare("
+            SELECT v.*, e.name as establishment_name
+            FROM violations v
+            JOIN inspections i ON v.inspection_id = i.id
+            JOIN establishments e ON i.establishment_id = e.id
+            WHERE v.id = ?
+        ");
+        $stmt->execute([$id]);
+        $violation = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$violation) {
+            header('Location: /violations?error=Violation not found');
+            exit;
+        }
+
+        ob_start();
+        $this->view('pages/violations/edit', [
+            'violation' => $violation
+        ]);
+        $content = ob_get_clean();
+
+        $this->view('layouts/main', [
+            'pageTitle' => 'Edit Violation',
+            'pageHeading' => 'Edit Violation Record #' . $id,
+            'breadcrumb' => ['Violations' => '/violations', 'Edit' => '#'],
+            'content' => $content
+        ]);
+    }
+
+    public function update(): void
+    {
+        $this->auth->handle();
+        
+        $id = (int)($_POST['id'] ?? 0);
+        $description = $_POST['description'] ?? '';
+        $fine_amount = (float)($_POST['fine_amount'] ?? 0);
+        $status = $_POST['status'] ?? 'Pending';
+        $due_date = $_POST['due_date'] ?? null;
+
+        if ($id > 0 && !empty($description)) {
+            // Get current for audit
+            $stmt = $this->db->prepare("SELECT * FROM violations WHERE id = ?");
+            $stmt->execute([$id]);
+            $old = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $stmt = $this->db->prepare("
+                UPDATE violations 
+                SET description = ?, fine_amount = ?, status = ?, due_date = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([$description, $fine_amount, $status, $due_date, $id]);
+
+            // Create Audit Log
+            $stmt = $this->db->prepare("
+                INSERT INTO audit_logs (user_id, action, table_name, record_id, changes_json, ip_address, user_agent)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $_SESSION['user_id'] ?? null,
+                'UPDATE',
+                'violations',
+                $id,
+                json_encode(['old' => $old, 'new' => ['description' => $description, 'fine_amount' => $fine_amount, 'status' => $status, 'due_date' => $due_date]]),
+                $_SERVER['REMOTE_ADDR'] ?? '',
+                $_SERVER['HTTP_USER_AGENT'] ?? ''
+            ]);
+
+            header('Location: /violations/show?id=' . $id . '&success=Violation updated successfully');
+        } else {
+            header('Location: /violations/edit?id=' . $id . '&error=Please fill in all required fields');
+        }
+        exit;
+    }
+
+    public function delete(): void
+    {
+        $this->auth->handle();
+        $id = (int)($_GET['id'] ?? 0);
+
+        if ($id > 0) {
+            // Check if citations exist (might want to delete them too or restrict)
+            $stmt = $this->db->prepare("DELETE FROM violations WHERE id = ?");
+            $stmt->execute([$id]);
+
+            header('Location: /violations?success=Violation record deleted');
+        } else {
+            header('Location: /violations?error=Invalid request');
+        }
+        exit;
+    }
 }

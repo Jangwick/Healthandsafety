@@ -6,7 +6,12 @@
                 <h3 style="margin: 0; font-size: 1.125rem; font-weight: 600; color: var(--text-color-1);">
                     <i class="fas fa-info-circle text-primary" style="margin-right: 0.5rem;"></i>Violation Information
                 </h3>
-                <span style="background: var(--bg-color-1); color: var(--text-secondary-1); font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 6px; border: 1px solid var(--border-color-1);">ID: #<?= $violation['id'] ?></span>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <a href="/violations/edit?id=<?= $violation['id'] ?>" class="btn btn-outline-warning" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 6px; text-decoration: none; border: 1px solid #f59e0b; color: #f59e0b;">
+                        <i class="fas fa-edit"></i> Edit Record
+                    </a>
+                    <span style="background: var(--bg-color-1); color: var(--text-secondary-1); font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 6px; border: 1px solid var(--border-color-1);">ID: #<?= $violation['id'] ?></span>
+                </div>
             </div>
             <div class="card-body" style="padding: 1.5rem;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">

@@ -45,10 +45,20 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new InspectionController())->show();
 } elseif ($requestUri === '/violations') {
     (new ViolationController())->index();
+} elseif ($requestUri === '/violations/create') {
+    (new ViolationController())->create();
+} elseif ($requestUri === '/violations/store' && $method === 'POST') {
+    (new ViolationController())->store();
+} elseif ($requestUri === '/violations/edit') {
+    (new ViolationController())->edit((int)($_GET['id'] ?? 0));
+} elseif ($requestUri === '/violations/update' && $method === 'POST') {
+    (new ViolationController())->update();
 } elseif ($requestUri === '/violations/show') {
     (new ViolationController())->show((int)($_GET['id'] ?? 0));
 } elseif ($requestUri === '/violations/update-status' && $method === 'POST') {
     (new ViolationController())->updateStatus();
+} elseif ($requestUri === '/violations/delete') {
+    (new ViolationController())->delete();
 } elseif ($requestUri === '/violations/print') {
     (new ViolationController())->print((int)($_GET['id'] ?? 0));
 } elseif ($requestUri === '/certificates') {
