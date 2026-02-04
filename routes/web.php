@@ -46,6 +46,10 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new ViolationController())->index();
 } elseif ($requestUri === '/violations/show') {
     (new ViolationController())->show((int)($_GET['id'] ?? 0));
+} elseif ($requestUri === '/violations/update-status' && $method === 'POST') {
+    (new ViolationController())->updateStatus();
+} elseif ($requestUri === '/violations/print') {
+    (new ViolationController())->print((int)($_GET['id'] ?? 0));
 } elseif ($requestUri === '/certificates') {
     (new CertificateController())->index();
 } elseif ($requestUri === '/certificates/show') {

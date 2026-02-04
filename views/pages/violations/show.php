@@ -27,6 +27,40 @@
                 </div>
             </div>
         </div>
+
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Identified Deficiencies</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Requirement</th>
+                                <th>Status</th>
+                                <th class="pe-4">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($failedItems)): ?>
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-muted">No specific items flagged.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($failedItems as $item): ?>
+                                    <tr>
+                                        <td class="ps-4"><?= htmlspecialchars($item['requirement_text']) ?></td>
+                                        <td><span class="badge bg-danger">Fail</span></td>
+                                        <td class="pe-4 text-muted fst-italic"><?= htmlspecialchars($item['notes'] ?? 'No remarks provided') ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="col-md-4">
@@ -35,22 +69,44 @@
                 <h3 class="card-title">Penalty Details</h3>
             </div>
             <div class="card-body">
+                <?php if (isset($_GET['success'])): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= htmlspecialchars($_GET['success']) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
                 <div class="text-center mb-4">
                     <h2 class="text-danger">₱<?= number_format((float)$violation['fine_amount'], 2) ?></h2>
-                    <span class="badge badge-<?= $violation['status'] === 'Paid' ? 'success' : 'warning' ?> p-2 px-4 shadow-sm">
+                    <span class="badge bg-<?= $violation['status'] === 'Paid' ? 'success' : ($violation['status'] === 'Pending' ? 'danger' : 'warning') ?> p-2 px-4 shadow-sm">
                         <?= $violation['status'] ?>
                     </span>
                 </div>
                 <hr>
                 <div class="d-grid gap-2">
                     <?php if ($violation['status'] === 'Pending'): ?>
-                        <button class="btn btn-success">
-                            <i class="fas fa-check-circle"></i> Mark as Paid
-                        </button>
+                        <form action="/violations/update-status" method="POST">
+                            <input type="hidden" name="id" value="<?= $violation['id'] ?>">
+                            <input type="hidden" name="status" value="Paid">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-check-circle"></i> Mark as Paid
+                            </button>
+                        </form>
                     <?php endif; ?>
-                    <button class="btn btn-outline-primary">
+
+                    <?php if ($violation['status'] === 'Paid' || $violation['status'] === 'In Progress'): ?>
+                        <form action="/violations/update-status" method="POST">
+                            <input type="hidden" name="id" value="<?= $violation['id'] ?>">
+                            <input type="hidden" name="status" value="Resolved">
+                            <button type="submit" class="btn btn-info w-100 text-white">
+                                <i class="fas fa-handshake"></i> Resolve Violation
+                            </button>
+                        </form>
+                    <?php endif; ?>
+
+                    <a href="/violations/print?id=<?= $violation['id'] ?>" target="_blank" class="btn btn-outline-primary">
                         <i class="fas fa-print"></i> Print Citation
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

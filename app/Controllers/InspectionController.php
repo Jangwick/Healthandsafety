@@ -237,14 +237,14 @@ class InspectionController extends BaseController
             $db->beginTransaction();
 
             // 1. Save individual items
-            $stmt = $db->prepare("INSERT INTO inspection_items (inspection_id, checklist_item_id, result) VALUES (?, ?, ?)");
+            $stmt = $db->prepare("INSERT INTO inspection_items (inspection_id, checklist_item_id, status) VALUES (?, ?, ?)");
             foreach ($items as $itemId => $result) {
                 $stmt->execute([$inspectionId, (string)$itemId, $result]);
             }
 
             // 2. Update inspection record
-            $stmt = $db->prepare("UPDATE inspections SET status = 'Completed', score = ?, rating = ?, remarks = ?, completed_at = NOW() WHERE id = ?");
-            $stmt->execute([$score, $rating, $remarks, $inspectionId]);
+            $stmt = $db->prepare("UPDATE inspections SET status = 'Completed', score = ?, rating = ?, completed_at = NOW() WHERE id = ?");
+            $stmt->execute([$score, $rating, $inspectionId]);
 
             // 3. Get establishment ID
             $stmt = $db->prepare("SELECT establishment_id FROM inspections WHERE id = ?");
@@ -259,9 +259,13 @@ class InspectionController extends BaseController
             } 
             // 5. Auto-generate Certificate if score >= 75
             else {
-                $stmt = $db->prepare("INSERT INTO certificates (establishment_id, inspection_id, type, certificate_number, issue_date, expiry_date) VALUES (?, ?, ?, ?, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 YEAR))");
+                $certType = 'Sanitary Clearance';
                 $certNum = "CERT-" . date('Y') . "-" . str_pad((string)$inspectionId, 5, '0', STR_PAD_LEFT);
-                $stmt->execute([$establishmentId, $inspectionId, 'Sanitary Clearance', $certNum]);
+                $issueDate = date('Y-m-d');
+                $expiryDate = date('Y-m-d', strtotime('+1 year'));
+
+                $stmt = $db->prepare("INSERT INTO certificates (establishment_id, inspection_id, type, certificate_number, issue_date, expiry_date) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$establishmentId, $inspectionId, $certType, $certNum, $issueDate, $expiryDate]);
             }
 
             $db->commit();
