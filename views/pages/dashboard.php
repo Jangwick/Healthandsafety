@@ -97,17 +97,34 @@
                         </tr>
                     <?php else: ?>
                         <?php foreach ($recent_inspections as $insp): ?>
-                        <tr style="border-bottom: 1px solid var(--border-color-1);">
-                            <td style="padding: 1.25rem 1.5rem;">
-                                <div style="font-weight: 600; color: var(--text-color-1);"><?= htmlspecialchars($insp['business_name']) ?></div>
-                                <div style="font-size: 0.75rem; color: var(--text-secondary-1);">Ref ID: #<?= $insp['id'] ?></div>
+                        <tr style="border-bottom: 1px solid var(--border-color-1); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.01)'" onmouseout="this.style.background='transparent'">
+                            <td style="padding: 1rem 1.5rem;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(76, 138, 137, 0.1); color: var(--primary-color-1); display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                                        <i class="fas fa-building" style="font-size: 0.875rem;"></i>
+                                    </div>
+                                    <div style="font-weight: 600; color: var(--text-color-1); font-size: 0.95rem;"><?= htmlspecialchars($insp['business_name']) ?></div>
+                                </div>
                             </td>
-                            <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary-1);"><?= htmlspecialchars($insp['category'] ?? 'General') ?></td>
-                            <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary-1);"><?= date('M d, Y', strtotime($insp['scheduled_date'])) ?></td>
-                            <td style="padding: 1.25rem 1.5rem;">
-                                <span class="status-badge status-<?= strtolower(str_replace(' ', '-', $insp['status'])) ?>" style="padding: 0.35rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600;">
-                                    <?= $insp['status'] ?>
-                                </span>
+                            <td style="padding: 1rem 1.5rem;">
+                                <span style="font-size: 0.875rem; color: var(--text-secondary-1);"><?= htmlspecialchars($insp['category']) ?></span>
+                            </td>
+                            <td style="padding: 1rem 1.5rem;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-size: 0.875rem; color: var(--text-color-1); font-weight: 500;"><?= date('M d, Y', strtotime($insp['scheduled_date'])) ?></span>
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary-1);"><?= htmlspecialchars($insp['inspector_name']) ?></span>
+                                </div>
+                            </td>
+                            <td style="padding: 1rem 1.5rem;">
+                                <?php if ($insp['status'] === 'Completed'): ?>
+                                    <span style="padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                        <i class="fas fa-check-circle" style="margin-right: 3px;"></i> VERIFIED
+                                    </span>
+                                <?php else: ?>
+                                    <span style="padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                                        <i class="fas fa-clock" style="margin-right: 3px;"></i> <?= strtoupper($insp['status']) ?>
+                                    </span>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>

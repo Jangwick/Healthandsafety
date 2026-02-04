@@ -30,6 +30,13 @@
     
     <div class="admin-header-right">
         <div class="header-actions">
+            <!-- Theme Toggle -->
+            <div class="notification-item">
+                <button class="notification-btn theme-toggle-btn" data-theme="dark" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            
             <div class="notification-item">
                 <button class="notification-btn" aria-label="Notifications">
                     <i class="fas fa-bell"></i>
@@ -98,6 +105,56 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3>Notifications</h3>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const root = document.documentElement;
+    
+    // Check local storage for theme
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    root.setAttribute('data-theme', currentTheme);
+    updateIcon(currentTheme);
+
+    themeBtn.addEventListener('click', () => {
+        const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateIcon(newTheme);
+    });
+
+    function updateIcon(theme) {
+        const icon = themeBtn.querySelector('i');
+        if (theme === 'dark') {
+            icon.className = 'fas fa-sun';
+            themeBtn.style.color = '#f59e0b';
+        } else {
+            icon.className = 'fas fa-moon';
+            themeBtn.style.color = '';
+        }
+    }
+
+    // Dropdown functionality
+    const profileBtn = document.getElementById('userProfileBtn');
+    const profileDropdown = document.getElementById('userProfileDropdown');
+    
+    if (profileBtn && profileDropdown) {
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!profileDropdown.contains(e.target)) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+    }
+});
+</script>
             <button class="modal-close" onclick="closeModal('notificationModal')">
                 <i class="fas fa-times"></i>
             </button>
