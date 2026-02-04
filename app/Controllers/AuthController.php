@@ -40,7 +40,7 @@ class AuthController extends BaseController
 
         $db = Database::getInstance();
         $stmt = $db->prepare("
-            SELECT u.*, r.name as role_name 
+            SELECT u.*, r.name as role_name, r.hierarchy_level 
             FROM users u 
             JOIN roles r ON u.role_id = r.id 
             WHERE u.email = ? AND u.deleted_at IS NULL
@@ -53,7 +53,8 @@ class AuthController extends BaseController
             $_SESSION['user'] = [
                 'id' => $user['id'],
                 'full_name' => $user['full_name'],
-                'role' => $user['role_name']
+                'role' => $user['role_name'],
+                'hierarchy' => $user['hierarchy_level']
             ];
             
             header('Location: /dashboard');

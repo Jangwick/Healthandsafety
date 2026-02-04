@@ -51,7 +51,7 @@ class InspectionController extends BaseController
         $this->auth->authorize($user, 5); // Inspector or above
 
         $db = Database::getInstance();
-        $establishments = $db->query("SELECT id, business_name as name FROM establishments WHERE deleted_at IS NULL ORDER BY business_name ASC")->fetchAll();
+        $establishments = $db->query("SELECT id, name FROM establishments WHERE deleted_at IS NULL ORDER BY name ASC")->fetchAll();
         $templates = $db->query("SELECT id, category FROM checklist_templates")->fetchAll();
         $inspectors = $db->query("SELECT u.id, u.full_name FROM users u JOIN roles r ON u.role_id = r.id WHERE r.name = 'Inspector' ORDER BY u.full_name ASC")->fetchAll();
 

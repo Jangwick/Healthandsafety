@@ -29,7 +29,8 @@ class AuthMiddleware
         return $_SESSION['user'] ?? [
             'id' => $_SESSION['user_id'],
             'full_name' => 'User',
-            'role' => 'Inspector'
+            'role' => 'Inspector',
+            'hierarchy' => 5
         ];
     }
 
