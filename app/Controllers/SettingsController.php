@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controllers;
 
-use App\Core\Database;
+use App\Database;
+use App\Middleware\AuthMiddleware;
+use PDO;
 
-class SettingsController {
+class SettingsController extends BaseController {
     private $db;
+    protected AuthMiddleware $auth;
 
     public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+        $this->auth = new AuthMiddleware();
+        $this->db = Database::getInstance();
         $this->ensureTableExists();
     }
 
@@ -38,20 +44,32 @@ class SettingsController {
     }
 
     public function index() {
+        $user = $this->auth->handle();
+        
         $stmt = $this->db->query("SELECT * FROM settings");
-        $settings_raw = $stmt->fetchAll();
+        $settings_raw = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $settings = [];
         foreach ($settings_raw as $s) {
             $settings[$s['setting_key']] = $s['setting_value'];
         }
 
-        $title = "System Settings";
-        require_once __DIR__ . '/../../views/layouts/header.php';
-        require_once __DIR__ . '/../../views/pages/settings/index.php';
-        require_once __DIR__ . '/../../views/layouts/footer.php';
+        ob_start();
+        $this->view('pages/settings/index', [
+            'settings' => $settings
+        ]);
+        $content = ob_get_clean();
+
+        $this->view('layouts/main', [
+            'content' => $content,
+            'pageTitle' => 'System Settings',
+            'pageHeading' => 'System Configuration',
+            'user' => $user
+        ]);
     }
 
     public function update() {
+        $this->auth->handle();
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $this->db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
             foreach ($_POST['settings'] as $key => $value) {
