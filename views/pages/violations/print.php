@@ -65,9 +65,29 @@
 
             <div class="mb-5">
                 <p class="fw-bold">VIOLATION DETAILS / DESCRIPTION:</p>
-                <div class="p-3 bg-light border" style="min-height: 150px;">
+                <div class="p-3 bg-light border mb-4">
                     <?= nl2br(htmlspecialchars($violation['description'])) ?>
                 </div>
+
+                <?php if (!empty($failedItems)): ?>
+                    <p class="fw-bold small">SPECIFIC DEFICIENCIES:</p>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr class="table-light">
+                                <th style="width: 70%">Requirement / Regulation</th>
+                                <th style="width: 30%">Inspector Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($failedItems as $item): ?>
+                                <tr>
+                                    <td class="small"><?= htmlspecialchars($item['requirement_text']) ?></td>
+                                    <td class="small fst-italic"><?= htmlspecialchars($item['notes'] ?? 'None') ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
             </div>
 
             <div class="row align-items-center mb-5">
