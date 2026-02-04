@@ -7,9 +7,18 @@ class ThemeManager {
     }
 
     init() {
-        this.applyTheme(this.currentTheme);
+        // Initial application without transition class
+        const root = document.documentElement;
+        if (this.currentTheme === 'system') {
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            root.setAttribute('data-theme', systemTheme);
+        } else {
+            root.setAttribute('data-theme', this.currentTheme);
+        }
+        
         this.setupEventListeners();
         this.updateActiveButton();
+        this.updateHeaderIcon();
     }
 
     getStoredTheme() {
@@ -23,6 +32,9 @@ class ThemeManager {
     applyTheme(theme) {
         const root = document.documentElement;
         
+        // Add transition class only when manual toggle
+        root.classList.add('theme-toggling');
+        
         if (theme === 'system') {
             const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             root.setAttribute('data-theme', systemTheme);
@@ -34,6 +46,11 @@ class ThemeManager {
         this.setStoredTheme(theme);
         this.updateActiveButton();
         this.updateHeaderIcon();
+
+        // Remove class after transition
+        setTimeout(() => {
+            root.classList.remove('theme-toggling');
+        }, 350);
     }
 
     updateHeaderIcon() {

@@ -19,6 +19,18 @@
     <link rel="stylesheet" href="/css/notification-modal.css">
     <link rel="stylesheet" href="/css/message-modal.css">
     <link rel="stylesheet" href="/css/message-content-modal.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            const html = document.documentElement;
+            if (savedTheme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                html.setAttribute('data-theme', savedTheme);
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Include Sidebar Component -->
