@@ -46,6 +46,16 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new CertificateController())->show((int)($_GET['id'] ?? 0));
 } elseif ($requestUri === '/users') {
     (new UserController())->index();
+} elseif ($requestUri === '/users/create') {
+    (new UserController())->create();
+} elseif ($requestUri === '/users/store' && $method === 'POST') {
+    (new UserController())->store();
+} elseif ($requestUri === '/users/edit') {
+    (new UserController())->edit();
+} elseif ($requestUri === '/users/update' && $method === 'POST') {
+    (new UserController())->update();
+} elseif ($requestUri === '/users/delete') {
+    (new UserController())->delete();
 } elseif ($requestUri === '/login') {
     if ($method === 'POST') {
         (new AuthController())->login();

@@ -1,11 +1,18 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h3 class="card-title">System Users</h3>
-        <button class="btn btn-primary btn-sm">
+        <a href="/users/create" class="btn btn-primary btn-sm">
             <i class="fas fa-user-plus"></i> Add User
-        </button>
+        </a>
     </div>
     <div class="card-body">
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($_GET['success']) ?></div>
+        <?php endif; ?>
+        <?php if (isset($_GET['error'])): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($_GET['error']) ?></div>
+        <?php endif; ?>
+
         <div class="table-responsive">
             <table class="table table-striped datatable">
                 <thead>
@@ -41,12 +48,17 @@
                             <td><?= date('M d, Y', strtotime($user['created_at'])) ?></td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-secondary">
+                                    <?php if ($user['role_name'] === 'Inspector'): ?>
+                                        <a href="/inspections/create?inspector_id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-success" title="Assign to Audit">
+                                            <i class="fas fa-calendar-plus"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                    <a href="/users/edit?id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-secondary">
                                         <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger">
+                                    </a>
+                                    <a href="/users/delete?id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this user?')">
                                         <i class="fas fa-trash"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

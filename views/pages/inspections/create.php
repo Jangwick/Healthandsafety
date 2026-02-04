@@ -17,7 +17,9 @@
                                 <select name="establishment_id" required style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--border-color-1); border-radius: 8px; background: var(--input-bg-1); color: var(--text-color-1); appearance: none;">
                                     <option value="">Select Establishment...</option>
                                     <?php foreach ($establishments as $est): ?>
-                                        <option value="<?= $est['id'] ?>"><?= htmlspecialchars($est['name']) ?></option>
+                                        <option value="<?= $est['id'] ?>" <?= (isset($_GET['establishment_id']) && $_GET['establishment_id'] == $est['id']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($est['name']) ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -68,7 +70,9 @@
                                 <select name="inspector_id" required style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--border-color-1); border-radius: 8px; background: var(--input-bg-1); color: var(--text-color-1); appearance: none;">
                                     <option value="">Choose Inspector...</option>
                                     <?php foreach ($inspectors as $insp): ?>
-                                        <option value="<?= $insp['id'] ?>"><?= htmlspecialchars($insp['full_name']) ?></option>
+                                        <option value="<?= $insp['id'] ?>" <?= (isset($_GET['inspector_id']) && $_GET['inspector_id'] == $insp['id']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($insp['full_name']) ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
