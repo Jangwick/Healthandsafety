@@ -5,8 +5,10 @@ declare(strict_types=1);
 use App\Controllers\HomeController;
 use App\Controllers\EstablishmentController;
 use App\Controllers\InspectionController;
+use App\Controllers\AuthController;
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$method = $_SERVER['REQUEST_METHOD'];
 
 switch ($requestUri) {
     case '/':
@@ -31,15 +33,15 @@ switch ($requestUri) {
         break;
         
     case '/login':
-        // Show login page
-        require_once __DIR__ . '/../views/pages/login.php';
+        if ($method === 'POST') {
+            (new AuthController())->login();
+        } else {
+            (new AuthController())->showLogin();
+        }
         break;
 
     case '/logout':
-        // Handle logout
-        session_start();
-        session_destroy();
-        header('Location: /login');
+        (new AuthController())->logout();
         break;
 
     default:
