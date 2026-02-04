@@ -63,10 +63,16 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new ViolationController())->print((int)($_GET['id'] ?? 0));
 } elseif ($requestUri === '/certificates') {
     (new CertificateController())->index();
+} elseif ($requestUri === '/certificates/create') {
+    (new CertificateController())->create();
+} elseif ($requestUri === '/certificates/store' && $method === 'POST') {
+    (new CertificateController())->store();
 } elseif ($requestUri === '/certificates/show') {
     (new CertificateController())->show((int)($_GET['id'] ?? 0));
 } elseif ($requestUri === '/certificates/revoke' && $method === 'POST') {
     (new CertificateController())->revoke();
+} elseif ($requestUri === '/certificates/delete' && $method === 'POST') {
+    (new CertificateController())->delete();
 } elseif ($requestUri === '/users') {
     (new UserController())->index();
 } elseif ($requestUri === '/users/create') {

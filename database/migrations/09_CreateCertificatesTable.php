@@ -13,7 +13,7 @@ class CreateCertificatesTable
         $sql = "CREATE TABLE IF NOT EXISTS certificates (
             id INT AUTO_INCREMENT PRIMARY KEY,
             establishment_id INT NOT NULL,
-            inspection_id INT NOT NULL,
+            inspection_id INT NULL,
             certificate_number VARCHAR(50) NOT NULL UNIQUE,
             type VARCHAR(100) NOT NULL,
             issue_date DATE NOT NULL,
