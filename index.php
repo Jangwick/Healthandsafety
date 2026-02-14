@@ -7,15 +7,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    require_once __DIR__ . '/../vendor/autoload.php';
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
     if (class_exists('Dotenv\Dotenv')) {
-        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
         $dotenv->load();
     }
 } else {
-    require_once __DIR__ . '/../app/Autoloader.php';
-    App\Env::load(__DIR__ . '/../.env');
+    require_once __DIR__ . '/app/Autoloader.php';
+    App\Env::load(__DIR__ . '/.env');
 }
 
 // Basic error handling
@@ -32,10 +32,10 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // Simple routing logic
 if ($requestUri === '/' || $requestUri === '/index.php') {
-    require_once __DIR__ . '/../routes/web.php';
+    require_once __DIR__ . '/routes/web.php';
 } elseif (str_starts_with($requestUri, '/api')) {
-    require_once __DIR__ . '/../routes/api.php';
+    require_once __DIR__ . '/routes/api.php';
 } else {
     // Default to web routes for other paths
-    require_once __DIR__ . '/../routes/web.php';
+    require_once __DIR__ . '/routes/web.php';
 }
