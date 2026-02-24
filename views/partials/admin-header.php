@@ -78,11 +78,11 @@
     </div>
     
     <div class="dropdown-body">
-        <a href="#" class="dropdown-item">
+        <a href="/profile" class="dropdown-item">
             <i class="fas fa-user"></i>
             <span>Profile</span>
         </a>
-        <a href="#" class="dropdown-item">
+        <a href="/settings" class="dropdown-item">
             <i class="fas fa-cog"></i>
             <span>Settings</span>
         </a>

@@ -10,6 +10,7 @@ use App\Controllers\ViolationController;
 use App\Controllers\CertificateController;
 use App\Controllers\UserController;
 use App\Controllers\SettingsController;
+use App\Controllers\ProfileController;
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
@@ -89,6 +90,10 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new SettingsController())->index();
 } elseif ($requestUri === '/settings/update' && $method === 'POST') {
     (new SettingsController())->update();
+} elseif ($requestUri === '/profile') {
+    (new ProfileController())->index();
+} elseif ($requestUri === '/profile/update' && $method === 'POST') {
+    (new ProfileController())->update();
 } elseif ($requestUri === '/login') {
     if ($method === 'POST') {
         (new AuthController())->login();
