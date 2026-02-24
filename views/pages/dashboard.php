@@ -11,8 +11,10 @@
             </div>
         </div>
         <div style="font-size: 0.875rem; color: var(--text-secondary-1);">
-            <span style="color: #10b981; font-weight: 600;"><i class="fas fa-arrow-up"></i> 12%</span> 
-            <span style="margin-left: 0.5rem;">since last month</span>
+            <span style="color: <?= $stats['est_trend'] > 0 ? '#10b981' : '#64748b' ?>; font-weight: 600;">
+                <i class="fas fa-arrow-up"></i> <?= $stats['est_trend'] ?>%
+            </span> 
+            <span style="margin-left: 0.5rem;">new this month</span>
         </div>
     </div>
 
@@ -62,8 +64,25 @@
             </div>
         </div>
         <div style="font-size: 0.875rem; color: var(--text-secondary-1);">
-            <span style="color: #10b981; font-weight: 600;"><i class="fas fa-arrow-up"></i> 0.5%</span> 
+            <span style="color: #10b981; font-weight: 600;"><i class="fas fa-check-circle"></i> Healthy</span> 
             <span style="margin-left: 0.5rem;">system average</span>
+        </div>
+    </div>
+
+    <!-- Revenue / Fines -->
+    <div class="card card-lift" style="padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color-1); background: var(--card-bg-1);">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem;">
+            <div>
+                <h3 style="color: var(--text-secondary-1); font-size: 0.875rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Fines Collected</h3>
+                <p style="color: var(--text-color-1); font-size: 2rem; font-weight: 700; line-height: 1; margin: 0;">₱<?= number_format($stats['total_fines'], 0) ?></p>
+            </div>
+            <div style="background: rgba(99, 102, 241, 0.1); padding: 12px; border-radius: 12px; color: #6366f1;">
+                <i class="fas fa-wallet fa-2x"></i>
+            </div>
+        </div>
+        <div style="font-size: 0.875rem; color: var(--text-secondary-1);">
+            <span style="color: #f59e0b; font-weight: 600;">₱<?= number_format($stats['pending_fines'], 0) ?></span> 
+            <span style="margin-left: 0.5rem;">pending collection</span>
         </div>
     </div>
 </div>
@@ -132,3 +151,35 @@
         </div>
     </div>
 </div>
+
+<?php if (!empty($alerts)): ?>
+<div class="card shadow-sm" style="margin-top: 2rem; border-radius: 12px; border: 1px solid #fee2e2; background: #fffafb;">
+    <div class="card-header" style="background: transparent; border-bottom: 1px solid #fee2e2; padding: 1.25rem 1.5rem;">
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #991b1b; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-exclamation-circle"></i>
+            Critical Compliance Alerts
+        </h3>
+    </div>
+    <div class="card-body" style="padding: 1rem 1.5rem;">
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <?php foreach ($alerts as $alert): ?>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: white; border: 1px solid #fee2e2; border-radius: 10px;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #fee2e2; color: #ef4444; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-biohazard"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; color: var(--text-color-1);"><?= htmlspecialchars($alert['business_name']) ?></div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary-1);"><?= htmlspecialchars($alert['description']) ?></div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: 800; color: #ef4444;">₱<?= number_format($alert['fine_amount'], 2) ?></div>
+                    <a href="/violations/show?id=<?= $alert['id'] ?>" style="font-size: 0.75rem; font-weight: 700; color: var(--primary-color-1); text-decoration: none;">Take Action</a>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
