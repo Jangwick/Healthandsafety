@@ -17,6 +17,17 @@ class HomeController extends BaseController
         $this->auth = new AuthMiddleware();
     }
 
+    public function landing(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $this->view('pages/landing', [
+            'isLoggedIn' => isset($_SESSION['user_id'])
+        ]);
+    }
+
     public function index(): void
     {
         $user = $this->auth->handle();

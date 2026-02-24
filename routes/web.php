@@ -19,7 +19,9 @@ $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Simple routing logic
-if ($requestUri === '/' || $requestUri === '/dashboard') {
+if ($requestUri === '/') {
+    (new HomeController())->landing();
+} elseif ($requestUri === '/dashboard') {
     (new HomeController())->index();
 } elseif ($requestUri === '/establishments') {
     (new EstablishmentController())->index();
