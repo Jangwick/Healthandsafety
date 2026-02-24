@@ -50,25 +50,49 @@ class AnalyticsController extends BaseController {
             GROUP BY status
         ")->fetchAll(PDO::FETCH_ASSOC);
 
-        // 4. Top Violating Business Types
-        $businessTypes = $this->db->query("
-            SELECT e.type, COUNT(v.id) as violation_count
+        // 4. Distribution by Establishment Category
+        $categoryCompliance = $this->db->query("
+            SELECT e.type, 
+                   COUNT(i.id) as total_inspections,
+                   AVG(i.score) as avg_score,
+                   SUM(CASE WHEN i.status = 'Completed' AND i.score < 75 THEN 1 ELSE 0 END) as failure_count
             FROM establishments e
-            JOIN inspections i ON e.id = i.establishment_id
-            JOIN violations v ON i.id = v.inspection_id
+            LEFT JOIN inspections i ON e.id = i.establishment_id
             GROUP BY e.type
-            ORDER BY violation_count DESC
-            LIMIT 5
+            ORDER BY avg_score DESC
         ")->fetchAll(PDO::FETCH_ASSOC);
 
-        // 5. Recent High-Risk Failures (Scores < 70)
+        // 5. Inspector Productivity Heatmap (Last 30 Days)
+        $inspectorStats = $this->db->query("
+            SELECT u.full_name as inspector_name, 
+                   COUNT(i.id) as total_conducted,
+                   AVG(i.score) as avg_rating_given
+            FROM users u
+            JOIN inspections i ON u.id = i.inspector_id
+            WHERE i.status = 'Completed' AND i.completed_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+            GROUP BY u.id
+            ORDER BY total_conducted DESC
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        // 6. Revenue Growth (Last 6 Months)
+        $revenueTrends = $this->db->query("
+            SELECT DATE_FORMAT(created_at, '%b %Y') as month,
+                   SUM(fine_amount) as total_imposed,
+                   SUM(CASE WHEN status = 'Paid' THEN fine_amount ELSE 0 END) as total_collected
+            FROM violations
+            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+            GROUP BY month
+            ORDER BY MIN(created_at)
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        // 7. Recent High-Risk Failures (Scores < 70)
         $highRisk = $this->db->query("
-            SELECT e.name, i.score, i.scheduled_date
+            SELECT e.name, i.score, i.scheduled_date, e.type as category
             FROM inspections i
             JOIN establishments e ON i.establishment_id = e.id
             WHERE i.score < 70 AND i.status = 'Completed'
             ORDER BY i.scheduled_date DESC
-            LIMIT 5
+            LIMIT 6
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         ob_start();
@@ -76,7 +100,9 @@ class AnalyticsController extends BaseController {
             'stats' => $stats,
             'trends' => $trends,
             'violationStats' => $violationStats,
-            'businessTypes' => $businessTypes,
+            'categoryCompliance' => $categoryCompliance,
+            'inspectorStats' => $inspectorStats,
+            'revenueTrends' => $revenueTrends,
             'highRisk' => $highRisk
         ]);
         $content = ob_get_clean();
