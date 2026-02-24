@@ -32,6 +32,15 @@ body {
     line-height: 1.5;
 }
 
+/* --- Common Components --- */
+.landing-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    width: 100%;
+}
+
 /* --- Navigation --- */
 nav {
     position: sticky;
@@ -40,12 +49,15 @@ nav {
     height: 80px;
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
+    z-index: 1000;
+    border-bottom: 1px solid var(--border-light);
+}
+
+nav .landing-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 5%;
-    z-index: 1000;
-    border-bottom: 1px solid var(--border-light);
+    height: 100%;
 }
 
 .nav-brand {
@@ -121,10 +133,12 @@ nav {
 
 /* --- Hero Section --- */
 .hero {
-    padding: 120px 5% 80px;
+    padding: 120px 0 80px;
     text-align: center;
+}
+
+.hero .landing-container {
     max-width: 900px;
-    margin: 0 auto;
 }
 
 .hero h1 {
@@ -151,14 +165,17 @@ nav {
 }
 
 .hero-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    padding: 80px 5%;
+    padding: 80px 0;
     background-color: #FAFAFA;
     margin-top: 80px;
     border-top: 1px solid var(--border-light);
     border-bottom: 1px solid var(--border-light);
+}
+
+.hero-stats .landing-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
 }
 
 .stat-card {
@@ -181,7 +198,10 @@ nav {
 
 /* --- Features --- */
 .features {
-    padding: 100px 5%;
+    padding: 100px 0;
+}
+
+.features .landing-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 32px;
@@ -228,9 +248,12 @@ nav {
 
 /* --- Mission Section --- */
 .mission {
-    padding: 80px 5%;
+    padding: 80px 0;
     background-color: var(--bg-dark);
     color: #FFFFFF;
+}
+
+.mission .landing-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 32px;
@@ -256,7 +279,7 @@ nav {
 
 /* --- Footer --- */
 footer {
-    padding: 80px 5% 40px;
+    padding: 80px 0 40px;
     border-top: 1px solid var(--border-light);
     background-color: #FFFFFF;
 }
