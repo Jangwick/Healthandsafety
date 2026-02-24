@@ -88,15 +88,15 @@
                                     </div>
                                     <div style="display: flex; gap: 0.5rem;">
                                         <!-- Pass Button (Radio Style) -->
-                                        <label style="cursor: pointer;">
-                                            <input type="radio" name="items[<?= $item['id'] ?>]" value="Pass" required style="display: none;" class="check-input pass-input">
+                                        <label style="cursor: pointer; position: relative;">
+                                            <input type="radio" name="items[<?= $item['id'] ?>]" value="Pass" required style="opacity: 0; position: absolute;" class="check-input pass-input">
                                             <div class="check-button pass-btn" style="padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
                                                 <i class="fas fa-check"></i> PASS
                                             </div>
                                         </label>
                                         <!-- Fail Button (Radio Style) -->
-                                        <label style="cursor: pointer;">
-                                            <input type="radio" name="items[<?= $item['id'] ?>]" value="Fail" required style="display: none;" class="check-input fail-input">
+                                        <label style="cursor: pointer; position: relative;">
+                                            <input type="radio" name="items[<?= $item['id'] ?>]" value="Fail" required style="opacity: 0; position: absolute;" class="check-input fail-input">
                                             <div class="check-button fail-btn" style="padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
                                                 <i class="fas fa-times"></i> FAIL
                                             </div>
