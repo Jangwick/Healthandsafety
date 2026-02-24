@@ -1,4 +1,48 @@
-﻿<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: start;">
+﻿<style>
+    /* Modal Styles */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.9);
+        backdrop-filter: blur(5px);
+        padding: 20px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content {
+        max-width: 90%;
+        max-height: 80vh;
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        object-fit: contain;
+    }
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .modal-close:hover { color: #bbb; }
+    .modal-caption {
+        margin-top: 20px;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-align: center;
+    }
+</style>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: start;">
     <div class="left-column">
         <!-- Main Information -->
         <div class="card shadow-sm" style="border-radius: 12px; border: 1px solid var(--border-color-1); background: var(--card-bg-1); margin-bottom: 1.5rem; overflow: hidden;">
@@ -138,7 +182,7 @@
                                         </td>
                                         <td style="padding: 1.25rem 1.5rem; text-align: center;">
                                             <?php if (!empty($item['photo_path'])): ?>
-                                                <a href="<?= htmlspecialchars($item['photo_path']) ?>" target="_blank">
+                                                <a href="javascript:void(0)" onclick="openImageModal('<?= htmlspecialchars($item['photo_path']) ?>', '<?= htmlspecialchars($item['requirement_text']) ?>')">
                                                     <img src="<?= htmlspecialchars($item['photo_path']) ?>" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb;">
                                                 </a>
                                             <?php else: ?>
@@ -282,3 +326,29 @@
         </div>
     </div>
 </div>
+
+<!-- Image Modal -->
+<div id="imgModal" class="image-modal" onclick="this.style.display='none'">
+    <span class="modal-close" onclick="document.getElementById('imgModal').style.display='none'">&times;</span>
+    <img id="modalImg" class="modal-content">
+    <div id="modalCaption" class="modal-caption"></div>
+</div>
+
+<script>
+function openImageModal(imgSrc, caption) {
+    const modal = document.getElementById('imgModal');
+    const modalImg = document.getElementById('modalImg');
+    const captionText = document.getElementById('modalCaption');
+    
+    modal.style.display = "flex";
+    modalImg.src = imgSrc;
+    captionText.innerHTML = caption;
+}
+
+// Close on escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+        document.getElementById('imgModal').style.display = "none";
+    }
+});
+</script>
