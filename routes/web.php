@@ -44,6 +44,14 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new InspectionController())->process();
 } elseif ($requestUri === '/inspections/show') {
     (new InspectionController())->show();
+} elseif ($requestUri === '/inspections/upload-file' && $method === 'POST') {
+    (new InspectionController())->uploadFile();
+} elseif ($requestUri === '/inspections/delete-file' && $method === 'POST') {
+    (new InspectionController())->deleteFile();
+} elseif ($requestUri === '/inspections/update-checklist' && $method === 'POST') {
+    (new InspectionController())->updateChecklist();
+} elseif ($requestUri === '/inspections/download-checklist') {
+    (new InspectionController())->downloadChecklist();
 } elseif ($requestUri === '/violations') {
     (new ViolationController())->index();
 } elseif ($requestUri === '/violations/create') {

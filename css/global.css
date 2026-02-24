@@ -34,8 +34,40 @@
 }
 
 /* ===================================
-   BASE STYLES - RESET & TYPOGRAPHY
+   UTILITY CLASSES - STATUS BADGES
    =================================== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.status-active, .status-completed {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: #198754;
+}
+
+.status-pending, .status-scheduled {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+}
+
+.status-inactive, .status-cancelled {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.status-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #997404;
+}
+
+/* Base styles - RESET & TYPOGRAPHY */
 * {
     margin: 0;
     padding: 0;

@@ -276,4 +276,144 @@ class InspectionController extends BaseController
         }
         exit;
     }
+
+    public function uploadFile(): void
+    {
+        $user = $this->auth->handle();
+        $inspectionId = (int)($_POST['inspection_id'] ?? 0);
+        
+        if ($inspectionId <= 0 || !isset($_FILES['file'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            exit;
+        }
+
+        $file = $_FILES['file'];
+        $uploadDir = __DIR__ . '/../../uploads/inspections/' . $inspectionId;
+        
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $fileName = time() . '_' . basename($file['name']);
+        $filePath = $uploadDir . '/' . $fileName;
+        $relativePath = '/uploads/inspections/' . $inspectionId . '/' . $fileName;
+
+        if (move_uploaded_file($file['tmp_name'], $filePath)) {
+            $db = Database::getInstance();
+            $stmt = $db->prepare("INSERT INTO inspection_files (inspection_id, file_name, file_path, file_type, file_size, uploaded_by) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$inspectionId, $file['name'], $relativePath, $file['type'], $file['size'], $user['id']]);
+
+            echo json_encode([
+                'success' => true,
+                'file' => [
+                    'id' => $db->lastInsertId(),
+                    'name' => htmlspecialchars($file['name']),
+                    'path' => $relativePath,
+                    'size' => round($file['size'] / 1024, 2) . ' KB'
+                ]
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to move file']);
+        }
+        exit;
+    }
+
+    public function deleteFile(): void
+    {
+        $user = $this->auth->handle();
+        $fileId = (int)($_POST['file_id'] ?? 0);
+
+        if ($fileId <= 0) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            exit;
+        }
+
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT file_path FROM inspection_files WHERE id = ?");
+        $stmt->execute([$fileId]);
+        $file = $stmt->fetch();
+
+        if ($file) {
+            $absolutePath = __DIR__ . '/../..' . $file['file_path'];
+            if (file_exists($absolutePath)) {
+                unlink($absolutePath);
+            }
+            $stmt = $db->prepare("DELETE FROM inspection_files WHERE id = ?");
+            $stmt->execute([$fileId]);
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'File not found']);
+        }
+        exit;
+    }
+    
+    public function updateChecklist(): void
+    {
+        $user = $this->auth->handle();
+        $inspectionId = (int)($_POST['inspection_id'] ?? 0);
+        $customChecklist = $_POST['custom_checklist'] ?? '';
+
+        if ($inspectionId <= 0 || empty($customChecklist)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            exit;
+        }
+
+        if (json_decode($customChecklist) === null) {
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
+            exit;
+        }
+
+        $db = Database::getInstance();
+        $stmt = $db->prepare("UPDATE inspections SET custom_checklist_json = ? WHERE id = ?");
+        $stmt->execute([$customChecklist, $inspectionId]);
+
+        echo json_encode(['success' => true]);
+        exit;
+    }
+
+    public function downloadChecklist(): void
+    {
+        $this->auth->handle();
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            header('Location: /inspections');
+            exit;
+        }
+
+        $db = Database::getInstance();
+        $stmt = $db->prepare("
+            SELECT i.custom_checklist_json, t.items_json
+            FROM inspections i 
+            JOIN checklist_templates t ON i.template_id = t.id
+            WHERE i.id = ?
+        ");
+        $stmt->execute([$id]);
+        $inspection = $stmt->fetch();
+
+        if (!$inspection) {
+            header('Location: /inspections?error=Inspection not found');
+            exit;
+        }
+
+        $itemsJson = $inspection['custom_checklist_json'] ?? $inspection['items_json'] ?? '[]';
+        $items = json_decode($itemsJson, true);
+
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="checklist_' . $id . '.csv"');
+
+        $output = fopen('php://output', 'w');
+        // Output BOM for UTF-8 compatibility
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        fputcsv($output, ['Requirement ID', 'Description/Requirement Task', 'Weight %', 'Inspector Status (Pass/Fail/NA)', 'Remarks and Notes']);
+
+        if (is_array($items)) {
+            foreach ($items as $item) {
+                fputcsv($output, [$item['id'], $item['text'] ?? $item['description'] ?? '', $item['weight'] ?? 0, '', '']);
+            }
+        }
+
+        fclose($output);
+        exit;
+    }
 }

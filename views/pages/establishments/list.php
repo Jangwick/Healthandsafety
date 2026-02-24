@@ -25,61 +25,72 @@
         <?php endif; ?>
 
         <div class="table-container" style="border: none; box-shadow: none; margin: 0;">
-            <table class="datatable" style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="background: rgba(0,0,0,0.02);">
-                        <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Business Details</th>
-                        <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Type / Category</th>
-                        <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Current Status</th>
-                        <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Contact Info</th>
-                        <th style="padding: 1rem 1.5rem; text-align: right; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Actions</th>
+            <table class="table table-hover mb-0">
+                <thead style="background: rgba(0,0,0,0.02);">
+                    <tr>
+                        <th style="padding: 1.25rem 1.5rem; border: 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary-1);">Business Details</th>
+                        <th style="padding: 1.25rem 1.5rem; border: 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary-1);">Type / Category</th>
+                        <th style="padding: 1.25rem 1.5rem; border: 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary-1);">Status</th>
+                        <th style="padding: 1.25rem 1.5rem; border: 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary-1);">Contact Info</th>
+                        <th style="padding: 1.25rem 1.5rem; border: 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary-1); text-align: right;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($establishments)): ?>
                         <tr>
-                            <td colspan="5" style="padding: 4rem 2rem; text-align: center; color: var(--text-secondary-1);">
-                                <i class="fas fa-store-slash fa-4x" style="opacity: 0.2; margin-bottom: 1rem;"></i>
-                                <p style="font-size: 1rem; font-weight: 600;">No establishments found</p>
-                                <p style="font-size: 0.875rem;">Try adding your first business establishment.</p>
+                            <td colspan="5" style="padding: 5rem 2rem; text-align: center;">
+                                <div style="opacity: 0.3;">
+                                    <i class="fas fa-store-slash fa-4x mb-3"></i>
+                                    <p style="font-size: 1.1rem; font-weight: 600; margin: 0;">No establishments found</p>
+                                    <p style="font-size: 0.9rem;">Register your first business establishment to get started.</p>
+                                </div>
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($establishments as $est): ?>
-                        <tr style="border-bottom: 1px solid var(--border-color-1); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.01)'" onmouseout="this.style.background='transparent'">
-                            <td style="padding: 1.25rem 1.5rem;">
-                                <div style="font-weight: 600; color: var(--text-color-1); font-size: 1rem;"><?= htmlspecialchars($est['name']) ?></div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary-1);"><i class="fas fa-map-marker-alt" style="margin-right: 4px;"></i> <?= htmlspecialchars($est['location'] ?? 'No address') ?></div>
+                        <tr style="transition: all 0.2s;">
+                            <td style="padding: 1.25rem 1.5rem; vertical-align: middle;">
+                                <div style="font-weight: 700; color: var(--text-color-1); font-size: 1rem; margin-bottom: 2px;"><?= htmlspecialchars($est['name']) ?></div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary-1); display: flex; align-items: center; gap: 5px;">
+                                    <i class="fas fa-map-marker-alt text-primary" style="font-size: 10px;"></i> 
+                                    <?= htmlspecialchars($est['location'] ?? 'No address') ?>
+                                </div>
                             </td>
-                            <td style="padding: 1.25rem 1.5rem;">
-                                <span style="background: rgba(76, 138, 137, 0.1); color: var(--primary-color-1); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">
+                            <td style="padding: 1.25rem 1.5rem; vertical-align: middle;">
+                                <span style="background: rgba(76, 138, 137, 0.1); color: var(--primary-color-1); padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(76, 138, 137, 0.2);">
+                                    <i class="fas fa-tag me-1" style="font-size: 10px;"></i>
                                     <?= htmlspecialchars($est['type']) ?>
                                 </span>
                             </td>
-                            <td style="padding: 1.25rem 1.5rem;">
-                                <span class="status-badge status-<?= strtolower($est['status']) ?>" style="padding: 0.35rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600;">
+                            <td style="padding: 1.25rem 1.5rem; vertical-align: middle;">
+                                <span class="status-badge status-<?= strtolower($est['status']) ?>">
+                                    <i class="fas fa-circle me-1" style="font-size: 6px;"></i>
                                     <?= htmlspecialchars($est['status']) ?>
                                 </span>
                             </td>
-                            <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary-1);">
-                                <?php 
-                                    $contact = json_decode($est['contact_json'] ?? '{}', true);
-                                    echo '<div style="font-size: 0.875rem;"><i class="fas fa-phone-alt" style="width: 16px; margin-right: 6px;"></i>'.htmlspecialchars($contact['phone'] ?? 'N/A').'</div>';
-                                    if(isset($contact['email'])) echo '<div style="font-size: 0.75rem;"><i class="fas fa-envelope" style="width: 16px; margin-right: 6px;"></i>'.htmlspecialchars($contact['email']).'</div>';
-                                ?>
+                            <td style="padding: 1.25rem 1.5rem; vertical-align: middle;">
+                                <?php $contact = json_decode($est['contact_json'] ?? '{}', true); ?>
+                                <div style="font-size: 0.85rem; color: var(--text-color-1); font-weight: 500;">
+                                    <i class="fas fa-phone-alt text-secondary" style="width: 14px; margin-right: 8px;"></i><?= htmlspecialchars($contact['phone'] ?? 'N/A') ?>
+                                </div>
+                                <?php if(isset($contact['email'])): ?>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary-1); margin-top: 2px;">
+                                        <i class="fas fa-envelope text-secondary" style="width: 14px; margin-right: 8px;"></i><?= htmlspecialchars($contact['email']) ?>
+                                    </div>
+                                <?php endif; ?>
                             </td>
-                            <td style="padding: 1.25rem 1.5rem; text-align: right;">
+                            <td style="padding: 1.25rem 1.5rem; vertical-align: middle; text-align: right;">
                                 <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                    <a href="/establishments/show?id=<?= $est['id'] ?>" class="btn btn-sm" style="background: rgba(0,0,0,0.05); color: var(--text-color-1); border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.1)'" onmouseout="this.style.background='rgba(0,0,0,0.05)'" title="View Details">
-                                        <i class="fas fa-eye"></i> Details
+                                    <a href="/establishments/show?id=<?= $est['id'] ?>" class="btn btn-sm btn-secondary" style="padding: 0.5rem 0.75rem; border-radius: 6px;" title="View Details">
+                                        <i class="fas fa-eye text-primary"></i>
                                     </a>
-                                    <a href="/establishments/edit?id=<?= $est['id'] ?>" class="btn btn-sm" style="background: rgba(0,0,0,0.05); color: var(--text-color-1); border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.1)'" onmouseout="this.style.background='rgba(0,0,0,0.05)'" title="Edit Establishment">
-                                        <i class="fas fa-edit"></i>
+                                    <a href="/establishments/edit?id=<?= $est['id'] ?>" class="btn btn-sm btn-secondary" style="padding: 0.5rem 0.75rem; border-radius: 6px;" title="Edit Establishment">
+                                        <i class="fas fa-edit text-primary"></i>
                                     </a>
-                                    <a href="/inspections/create?establishment_id=<?= $est['id'] ?>" class="btn btn-sm btn-success" style="padding: 6px 12px; border-radius: 6px; font-weight: 600;" title="Schedule Inspection">
-                                        <i class="fas fa-clipboard-check"></i> Inspect
+                                    <a href="/inspections/create?establishment_id=<?= $est['id'] ?>" class="btn btn-sm btn-primary" style="padding: 0.5rem 0.75rem; border-radius: 6px;" title="Schedule Inspection">
+                                        <i class="fas fa-clipboard-check"></i>
                                     </a>
-                                    <a href="/establishments/delete?id=<?= $est['id'] ?>" class="btn btn-sm btn-outline-danger" style="padding: 6px 12px; border-radius: 6px; font-weight: 600;" onclick="return confirm('Are you sure you want to delete this establishment?')" title="Delete Establishment">
+                                    <a href="/establishments/delete?id=<?= $est['id'] ?>" class="btn btn-sm btn-outline-danger" style="padding: 0.5rem 0.75rem; border-radius: 6px;" onclick="return confirm('Are you sure you want to delete this establishment?')" title="Delete">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
