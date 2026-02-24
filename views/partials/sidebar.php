@@ -48,6 +48,12 @@
                             <span>Inspections</span>
                         </a>
                     </li>
+                    <li class="sidebar-menu-item">
+                        <a href="/reports" class="sidebar-link <?= $requestUri === '/reports' ? 'active' : '' ?>">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Reports & Analytics</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
             

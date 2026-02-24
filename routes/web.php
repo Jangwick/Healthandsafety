@@ -11,6 +11,7 @@ use App\Controllers\CertificateController;
 use App\Controllers\UserController;
 use App\Controllers\SettingsController;
 use App\Controllers\ProfileController;
+use App\Controllers\AnalyticsController;
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
@@ -100,6 +101,10 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new SettingsController())->index();
 } elseif ($requestUri === '/settings/update' && $method === 'POST') {
     (new SettingsController())->update();
+} elseif ($requestUri === '/reports') {
+    (new AnalyticsController())->index();
+} elseif ($requestUri === '/reports/export') {
+    (new AnalyticsController())->export();
 } elseif ($requestUri === '/profile') {
     (new ProfileController())->index();
 } elseif ($requestUri === '/profile/update' && $method === 'POST') {
