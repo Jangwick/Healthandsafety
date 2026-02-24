@@ -206,6 +206,7 @@ class InspectionController extends BaseController
 
     public function process(): void
     {
+        file_put_contents('/tmp/inspection_debug.log', "POST: " . print_r($_POST, true) . "\nFILES: " . print_r($_FILES, true) . "\n", FILE_APPEND);
         $this->auth->handle();
         
         $inspectionId = (int)($_POST['inspection_id'] ?? 0);
