@@ -326,6 +326,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (notificationModal) notificationModal.classList.remove('show');
             if (messageModal) messageModal.classList.remove('show');
         });
+
+        userProfileDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
     }
 
     // Close all when clicking outside
