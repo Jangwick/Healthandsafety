@@ -12,6 +12,7 @@ use App\Controllers\UserController;
 use App\Controllers\SettingsController;
 use App\Controllers\ProfileController;
 use App\Controllers\AnalyticsController;
+use App\Controllers\AuditLogController;
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
@@ -105,6 +106,8 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new AnalyticsController())->index();
 } elseif ($requestUri === '/reports/export') {
     (new AnalyticsController())->export();
+} elseif ($requestUri === '/admin/audit-logs') {
+    (new AuditLogController())->index();
 } elseif ($requestUri === '/profile') {
     (new ProfileController())->index();
 } elseif ($requestUri === '/profile/update' && $method === 'POST') {

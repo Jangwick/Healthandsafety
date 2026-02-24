@@ -96,6 +96,9 @@ class EstablishmentController extends BaseController
         $stmt = $db->prepare("INSERT INTO establishments (name, type, location, status, contact_json, gps_coordinates) 
                                    VALUES (?, ?, ?, ?, ?, ST_GeomFromText('POINT(121.0 14.0)'))");
         $stmt->execute([$data['name'], $data['type'], $data['location'], $data['status'], $data['contact_json']]);
+        $id = (int)$db->lastInsertId();
+
+        $this->logTransaction('CREATE', 'establishments', $id, $data);
 
         header('Location: /establishments?success=Establishment registered');
         exit;
@@ -141,6 +144,7 @@ class EstablishmentController extends BaseController
         ];
 
         if ($this->model->update($id, $data)) {
+            $this->logTransaction('UPDATE', 'establishments', $id, $data);
             header('Location: /establishments?success=Establishment updated');
         } else {
             header('Location: /establishments/edit?id=' . $id . '&error=Update failed');
@@ -154,6 +158,7 @@ class EstablishmentController extends BaseController
         $id = (int)($_GET['id'] ?? 0);
 
         if ($this->model->delete($id)) {
+            $this->logTransaction('DELETE', 'establishments', $id);
             header('Location: /establishments?success=Establishment deleted');
         } else {
             header('Location: /establishments?error=Delete failed');

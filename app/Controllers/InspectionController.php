@@ -92,6 +92,13 @@ class InspectionController extends BaseController
              VALUES (?, ?, ?, ?, 'Scheduled', ?)"
         );
         $stmt->execute([$establishment_id, $inspector_id, $template_id, $scheduled_date, $priority]);
+        $id = (int)$db->lastInsertId();
+
+        $this->logTransaction('SCHEDULE_INSPECTION', 'inspections', $id, [
+            'establishment_id' => $establishment_id,
+            'scheduled_date' => $scheduled_date,
+            'priority' => $priority
+        ]);
 
         header('Location: /inspections?success=Inspection scheduled successfully');
         exit;
@@ -264,6 +271,13 @@ class InspectionController extends BaseController
             // 2. Update inspection record
             $stmt = $db->prepare("UPDATE inspections SET status = 'Completed', score = ?, rating = ?, remarks = ?, completed_at = NOW() WHERE id = ?");
             $stmt->execute([$score, $rating, $remarks, $inspectionId]);
+
+            $this->logTransaction('COMPLETE_INSPECTION', 'inspections', $inspectionId, [
+                'score' => $score,
+                'rating' => $rating,
+                'passed_items' => $passedItems,
+                'total_items' => $totalItems
+            ]);
 
             // 3. Get establishment ID
             $stmt = $db->prepare("SELECT establishment_id FROM inspections WHERE id = ?");

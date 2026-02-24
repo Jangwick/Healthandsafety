@@ -87,6 +87,12 @@
                         </a>
                     </li>
                     <li class="sidebar-menu-item">
+                        <a href="/admin/audit-logs" class="sidebar-link <?= $requestUri === '/admin/audit-logs' ? 'active' : '' ?>">
+                            <i class="fas fa-history"></i>
+                            <span>Audit Logs</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
                         <a href="/settings" class="sidebar-link <?= str_starts_with($requestUri, '/settings') ? 'active' : '' ?>">
                             <i class="fas fa-cog"></i>
                             <span>System Settings</span>

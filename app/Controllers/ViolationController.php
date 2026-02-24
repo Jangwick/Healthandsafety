@@ -171,20 +171,7 @@ class ViolationController extends BaseController
             $stmt = $this->db->prepare("UPDATE violations SET status = ? WHERE id = ?");
             $stmt->execute([$status, $id]);
 
-            // Create Audit Log
-            $stmt = $this->db->prepare("
-                INSERT INTO audit_logs (user_id, action, table_name, record_id, changes_json, ip_address, user_agent)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
-            $stmt->execute([
-                $_SESSION['user_id'] ?? null,
-                'UPDATE_STATUS',
-                'violations',
-                $id,
-                json_encode(['old_status' => $currentStatus, 'new_status' => $status]),
-                $_SERVER['REMOTE_ADDR'] ?? '',
-                $_SERVER['HTTP_USER_AGENT'] ?? ''
-            ]);
+            $this->logTransaction('UPDATE_STATUS', 'violations', $id, ['old_status' => $currentStatus, 'new_status' => $status]);
 
             header('Location: /violations/show?id=' . $id . '&success=Status updated to ' . $status);
         } else {
@@ -204,20 +191,7 @@ class ViolationController extends BaseController
             $stmt = $this->db->prepare("UPDATE violations SET fine_amount = ?, due_date = ? WHERE id = ?");
             $stmt->execute([$amount, $dueDate, $id]);
 
-            // Log
-            $stmt = $this->db->prepare("
-                INSERT INTO audit_logs (user_id, action, table_name, record_id, changes_json, ip_address, user_agent)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
-            $stmt->execute([
-                $_SESSION['user_id'] ?? null,
-                'ASSIGN_FINE',
-                'violations',
-                $id,
-                json_encode(['fine_amount' => $amount, 'due_date' => $dueDate]),
-                $_SERVER['REMOTE_ADDR'] ?? '',
-                $_SERVER['HTTP_USER_AGENT'] ?? ''
-            ]);
+            $this->logTransaction('ASSIGN_FINE', 'violations', $id, ['fine_amount' => $amount, 'due_date' => $dueDate]);
 
             header('Location: /violations/show?id=' . $id . '&success=Fine assigned successfully');
         } else {
@@ -323,20 +297,7 @@ class ViolationController extends BaseController
             $stmt->execute([$inspection_id, $description, $fine_amount, $status, $due_date]);
             $id = $this->db->lastInsertId();
 
-            // Create Audit Log
-            $stmt = $this->db->prepare("
-                INSERT INTO audit_logs (user_id, action, table_name, record_id, changes_json, ip_address, user_agent)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
-            $stmt->execute([
-                $_SESSION['user_id'] ?? null,
-                'CREATE',
-                'violations',
-                $id,
-                json_encode(['description' => $description, 'fine_amount' => $fine_amount, 'status' => $status]),
-                $_SERVER['REMOTE_ADDR'] ?? '',
-                $_SERVER['HTTP_USER_AGENT'] ?? ''
-            ]);
+            $this->logTransaction('CREATE', 'violations', (int)$id, ['description' => $description, 'fine_amount' => $fine_amount, 'status' => $status]);
 
             header('Location: /violations?success=Violation recorded successfully');
         } else {
@@ -401,20 +362,7 @@ class ViolationController extends BaseController
             ");
             $stmt->execute([$description, $fine_amount, $status, $due_date, $id]);
 
-            // Create Audit Log
-            $stmt = $this->db->prepare("
-                INSERT INTO audit_logs (user_id, action, table_name, record_id, changes_json, ip_address, user_agent)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
-            $stmt->execute([
-                $_SESSION['user_id'] ?? null,
-                'UPDATE',
-                'violations',
-                $id,
-                json_encode(['old' => $old, 'new' => ['description' => $description, 'fine_amount' => $fine_amount, 'status' => $status, 'due_date' => $due_date]]),
-                $_SERVER['REMOTE_ADDR'] ?? '',
-                $_SERVER['HTTP_USER_AGENT'] ?? ''
-            ]);
+            $this->logTransaction('UPDATE', 'violations', $id, ['old' => $old, 'new' => ['description' => $description, 'fine_amount' => $fine_amount, 'status' => $status, 'due_date' => $due_date]]);
 
             header('Location: /violations/show?id=' . $id . '&success=Violation updated successfully');
         } else {

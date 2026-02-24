@@ -24,4 +24,21 @@ abstract class BaseController
             die("View not found: {$path}");
         }
     }
+
+    protected function logTransaction(string $action, string $table, int $recordId, array $changes = []): void {
+        $db = \App\Database::getInstance();
+        $stmt = $db->prepare("
+            INSERT INTO audit_logs (user_id, action, table_name, record_id, changes_json, ip_address, user_agent)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $_SESSION['user_id'] ?? null,
+            $action,
+            $table,
+            $recordId,
+            json_encode($changes),
+            $_SERVER['REMOTE_ADDR'] ?? '',
+            $_SERVER['HTTP_USER_AGENT'] ?? ''
+        ]);
+    }
 }
