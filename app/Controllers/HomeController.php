@@ -20,27 +20,67 @@ class HomeController extends BaseController
     public function index(): void
     {
         $user = $this->auth->handle();
-
         $db = Database::getInstance();
         
-        // 1. Core Statistics with simple trend calculation
-        $lastMonth = date('Y-m-d', strtotime('-1 month'));
+        // 1. Core Statistics
+        $now = date('Y-m-d H:i:s');
+        $lastMonth = date('Y-m-d H:i:s', strtotime('-1 month'));
+        $prevMonth = date('Y-m-d H:i:s', strtotime('-2 months'));
+        
+        $lastWeek = date('Y-m-d H:i:s', strtotime('-7 days'));
+        $prevWeek = date('Y-m-d H:i:s', strtotime('-14 days'));
+
+        // Establishments data
+        $totalEst = (int)$db->query("SELECT COUNT(*) FROM establishments")->fetchColumn();
+        $newEstMonth = (int)$db->query("SELECT COUNT(*) FROM establishments WHERE created_at >= '$lastMonth'")->fetchColumn();
+        $prevNewEstMonth = (int)$db->query("SELECT COUNT(*) FROM establishments WHERE created_at >= '$prevMonth' AND created_at < '$lastMonth'")->fetchColumn();
+        
+        $estTrend = 0;
+        if ($prevNewEstMonth > 0) {
+            $estTrend = round((($newEstMonth - $prevNewEstMonth) / $prevNewEstMonth) * 100, 1);
+        } elseif ($newEstMonth > 0) {
+            $estTrend = 100.0;
+        }
+
+        // Active Inspections
+        $activeInspections = (int)$db->query("SELECT COUNT(*) FROM inspections WHERE status IN ('Scheduled', 'In Progress')")->fetchColumn();
+        $inspectionsThisWeek = (int)$db->query("SELECT COUNT(*) FROM inspections WHERE scheduled_date >= '$lastWeek'")->fetchColumn();
+        $inspectionsPrevWeek = (int)$db->query("SELECT COUNT(*) FROM inspections WHERE scheduled_date >= '$prevWeek' AND scheduled_date < '$lastWeek'")->fetchColumn();
+        $inspTrend = 0;
+        if ($inspectionsPrevWeek > 0) {
+            $inspTrend = round((($inspectionsThisWeek - $inspectionsPrevWeek) / $inspectionsPrevWeek) * 100, 1);
+        } elseif ($inspectionsThisWeek > 0) {
+            $inspTrend = 5.0; // Minimal default for activity
+        }
+
+        // Pending Violations
+        $pendingViolations = (int)$db->query("SELECT COUNT(*) FROM violations WHERE status = 'Pending'")->fetchColumn();
+        $violationsThisWeek = (int)$db->query("SELECT COUNT(*) FROM violations WHERE created_at >= '$lastWeek'")->fetchColumn();
+        $violationsPrevWeek = (int)$db->query("SELECT COUNT(*) FROM violations WHERE created_at >= '$prevWeek' AND created_at < '$lastWeek'")->fetchColumn();
+        $violationTrend = 0;
+        if ($violationsPrevWeek > 0) {
+            $violationTrend = round((($violationsThisWeek - $violationsPrevWeek) / $violationsPrevWeek) * 100, 1);
+        }
+
+        // Compliance Rate (Average score of completed inspections)
+        $complianceScore = $db->query("SELECT IFNULL(ROUND(AVG(score), 1), 0) FROM inspections WHERE status = 'Completed'")->fetchColumn();
+        
+        // Revenue / Fines
+        $finesCollected = $db->query("SELECT IFNULL(SUM(fine_amount), 0) FROM violations WHERE status = 'Paid'")->fetchColumn();
+        $pendingCollection = $db->query("SELECT IFNULL(SUM(fine_amount), 0) FROM violations WHERE status = 'Pending'")->fetchColumn();
+
         $stats = [
-            'total_establishments' => (int)$db->query("SELECT COUNT(*) FROM establishments")->fetchColumn(),
-            'est_new' => (int)$db->query("SELECT COUNT(*) FROM establishments WHERE created_at >= '$lastMonth'")->fetchColumn(),
-            
-            'active_inspections' => (int)$db->query("SELECT COUNT(*) FROM inspections WHERE status IN ('Scheduled', 'In Progress')")->fetchColumn(),
-            'total_violations' => (int)$db->query("SELECT COUNT(*) FROM violations WHERE status = 'Pending'")->fetchColumn(),
-            'compliance_rate' => $db->query("SELECT IFNULL(ROUND(AVG(score), 1), 0) FROM inspections WHERE status = 'Completed'")->fetchColumn(),
-            
-            // Revenue / Fines
-            'total_fines' => $db->query("SELECT IFNULL(SUM(fine_amount), 0) FROM violations WHERE status = 'Paid'")->fetchColumn(),
-            'pending_fines' => $db->query("SELECT IFNULL(SUM(fine_amount), 0) FROM violations WHERE status != 'Paid'")->fetchColumn(),
+            'total_establishments' => $totalEst,
+            'est_trend' => $estTrend,
+            'active_inspections' => $activeInspections,
+            'insp_trend' => $inspTrend,
+            'total_violations' => $pendingViolations,
+            'violation_trend' => $violationTrend,
+            'compliance_rate' => $complianceScore,
+            'total_fines' => $finesCollected,
+            'pending_fines' => $pendingCollection
         ];
 
-        // 2. Calculated Trends (Simple Mock percentages if historical data is thin, but structured for UI)
-        $stats['est_trend'] = $stats['total_establishments'] > 0 ? round(($stats['est_new'] / $stats['total_establishments']) * 100, 1) : 0;
-        
         // 3. Recent Inspection Activity
         $recent = $db->query("
             SELECT i.*, e.name as business_name, e.type as category, u.full_name as inspector_name 

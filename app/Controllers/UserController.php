@@ -80,6 +80,8 @@ class UserController extends BaseController
         try {
             $stmt = $this->db->prepare("INSERT INTO users (full_name, email, password_hash, role_id) VALUES (?, ?, ?, ?)");
             $stmt->execute([$fullName, $email, $passwordHash, $roleId]);
+            $newId = (int)$this->db->lastInsertId();
+            $this->logTransaction('CREATE', 'users', $newId, ['full_name' => $fullName, 'email' => $email, 'role_id' => $roleId]);
             header('Location: /users?success=User added successfully');
         } catch (\PDOException $e) {
             header('Location: /users/create?error=Email already registered');
@@ -106,6 +108,7 @@ class UserController extends BaseController
         try {
             $stmt = $this->db->prepare("DELETE FROM users WHERE id = ?");
             $stmt->execute([$id]);
+            $this->logTransaction('DELETE', 'users', $id, ['user_id' => $id]);
             header('Location: /users?success=User deleted successfully');
         } catch (\PDOException $e) {
             header('Location: /users?error=Unable to delete user (may have related records)');
@@ -160,9 +163,11 @@ class UserController extends BaseController
                 $passwordHash = password_hash($password, PASSWORD_BCRYPT);
                 $stmt = $this->db->prepare("UPDATE users SET full_name = ?, email = ?, role_id = ?, password_hash = ? WHERE id = ?");
                 $stmt->execute([$fullName, $email, $roleId, $passwordHash, $id]);
+                $this->logTransaction('UPDATE', 'users', $id, ['full_name' => $fullName, 'email' => $email, 'role_id' => $roleId, 'password_updated' => true]);
             } else {
                 $stmt = $this->db->prepare("UPDATE users SET full_name = ?, email = ?, role_id = ? WHERE id = ?");
                 $stmt->execute([$fullName, $email, $roleId, $id]);
+                $this->logTransaction('UPDATE', 'users', $id, ['full_name' => $fullName, 'email' => $email, 'role_id' => $roleId]);
             }
             header('Location: /users?success=User updated successfully');
         } catch (\PDOException $e) {

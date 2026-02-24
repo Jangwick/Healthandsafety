@@ -24,6 +24,8 @@ class AuditLogController extends BaseController {
         $table = $_GET['table'] ?? '';
         $action = $_GET['action'] ?? '';
         $user_search = $_GET['user'] ?? '';
+        $startDate = $_GET['start_date'] ?? '';
+        $endDate = $_GET['end_date'] ?? '';
         
         $query = "
             SELECT a.*, u.full_name as user_name, u.email as user_email
@@ -49,6 +51,16 @@ class AuditLogController extends BaseController {
             $params[] = "%$user_search%";
             $params[] = "%$user_search%";
         }
+
+        if ($startDate) {
+            $where[] = "DATE(a.timestamp) >= ?";
+            $params[] = $startDate;
+        }
+
+        if ($endDate) {
+            $where[] = "DATE(a.timestamp) <= ?";
+            $params[] = $endDate;
+        }
         
         if (!empty($where)) {
             $query .= " WHERE " . implode(" AND ", $where);
@@ -71,7 +83,9 @@ class AuditLogController extends BaseController {
             'actions' => $actions,
             'currentTable' => $table,
             'currentAction' => $action,
-            'currentUser' => $user_search
+            'currentUser' => $user_search,
+            'currentStartDate' => $startDate,
+            'currentEndDate' => $endDate
         ]);
         $content = ob_get_clean();
 

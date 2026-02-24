@@ -30,7 +30,9 @@
             </div>
         </div>
         <div style="font-size: 0.875rem; color: var(--text-secondary-1);">
-            <span style="color: #10b981; font-weight: 600;"><i class="fas fa-arrow-up"></i> 5%</span> 
+            <span style="color: <?= ($stats['insp_trend'] ?? 0) >= 0 ? '#10b981' : '#ef4444' ?>; font-weight: 600;">
+                <i class="fas fa-arrow-<?= ($stats['insp_trend'] ?? 0) >= 0 ? 'up' : 'down' ?>"></i> <?= abs($stats['insp_trend'] ?? 0) ?>%
+            </span> 
             <span style="margin-left: 0.5rem;">scheduled weekly</span>
         </div>
     </div>
@@ -47,7 +49,9 @@
             </div>
         </div>
         <div style="font-size: 0.875rem; color: var(--text-secondary-1);">
-            <span style="color: #ef4444; font-weight: 600;"><i class="fas fa-arrow-down"></i> 3%</span> 
+            <span style="color: <?= ($stats['violation_trend'] ?? 0) > 0 ? '#ef4444' : '#10b981' ?>; font-weight: 600;">
+                <i class="fas fa-arrow-<?= ($stats['violation_trend'] ?? 0) > 0 ? 'up' : 'down' ?>"></i> <?= abs($stats['violation_trend'] ?? 0) ?>%
+            </span> 
             <span style="margin-left: 0.5rem;">from last week</span>
         </div>
     </div>
