@@ -95,6 +95,12 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     } else {
         (new AuthController())->showLogin();
     }
+} elseif ($requestUri === '/login/otp') {
+    if ($method === 'POST') {
+        (new AuthController())->verifyOtp();
+    } else {
+        (new AuthController())->showOtp();
+    }
 } elseif ($requestUri === '/logout') {
     (new AuthController())->logout();
 } else {
