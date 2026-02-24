@@ -13,15 +13,15 @@
         </div>
     </div>
 
-    <!-- Pending -->
-    <div class="card shadow-sm" style="padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color-1); background: var(--card-bg-1);">
+    <!-- Unassigned Fine -->
+    <div class="card shadow-sm" style="padding: 1.25rem; border-radius: 12px; border: 1px solid #f87171; background: #fffefe;">
         <div style="display: flex; align-items: flex-start; justify-content: space-between;">
             <div>
-                <h3 style="color: var(--text-secondary-1); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Pending</h3>
-                <p style="color: #ef4444; font-size: 1.75rem; font-weight: 700; line-height: 1; margin: 0;"><?= number_format($stats['pending']) ?></p>
+                <h3 style="color: #991b1b; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Awaiting Fine</h3>
+                <p style="color: #ef4444; font-size: 1.75rem; font-weight: 700; line-height: 1; margin: 0;"><?= number_format($stats['unassigned']) ?></p>
             </div>
             <div style="background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 10px; color: #ef4444;">
-                <i class="fas fa-clock"></i>
+                <i class="fas fa-gavel"></i>
             </div>
         </div>
     </div>
@@ -146,10 +146,17 @@
                                     'Resolved' => 'background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;',
                                     default => 'background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb;'
                                 };
+                                
+                                if ($violation['fine_amount'] == 0) {
+                                    $statusStyle = 'background: #000; color: #fff; border: 1px solid #000;';
+                                    $statusText = 'Needs Assignment';
+                                } else {
+                                    $statusText = $violation['status'];
+                                }
                                 ?>
                                 <div style="display: inline-flex; align-items: center; gap: 0.5rem;">
                                     <span style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; <?= $statusStyle ?>">
-                                        <?= $violation['status'] ?>
+                                        <?= $statusText ?>
                                     </span>
                                     <?php if ($isOverdue): ?>
                                         <span style="padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; background: #000; color: #fff;">OVERDUE</span>

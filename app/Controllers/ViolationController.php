@@ -61,6 +61,7 @@ class ViolationController extends BaseController
         $stats = [
             'total' => $this->db->query("SELECT COUNT(*) FROM violations")->fetchColumn(),
             'pending' => $this->db->query("SELECT COUNT(*) FROM violations WHERE status = 'Pending'")->fetchColumn(),
+            'unassigned' => $this->db->query("SELECT COUNT(*) FROM violations WHERE fine_amount = 0")->fetchColumn(),
             'paid' => $this->db->query("SELECT COUNT(*) FROM violations WHERE status = 'Paid'")->fetchColumn(),
             'resolved' => $this->db->query("SELECT COUNT(*) FROM violations WHERE status = 'Resolved'")->fetchColumn(),
             'overdue' => $this->db->query("SELECT COUNT(*) FROM violations WHERE status NOT IN ('Paid', 'Resolved') AND due_date < CURRENT_DATE")->fetchColumn(),
@@ -186,6 +187,39 @@ class ViolationController extends BaseController
             ]);
 
             header('Location: /violations/show?id=' . $id . '&success=Status updated to ' . $status);
+        } else {
+            header('Location: /violations?error=Invalid request');
+        }
+        exit;
+    }
+
+    public function assignFine(): void
+    {
+        $this->auth->handle();
+        $id = (int)($_POST['id'] ?? 0);
+        $amount = (float)($_POST['fine_amount'] ?? 0);
+        $dueDate = $_POST['due_date'] ?? null;
+
+        if ($id > 0) {
+            $stmt = $this->db->prepare("UPDATE violations SET fine_amount = ?, due_date = ? WHERE id = ?");
+            $stmt->execute([$amount, $dueDate, $id]);
+
+            // Log
+            $stmt = $this->db->prepare("
+                INSERT INTO audit_logs (user_id, action, table_name, record_id, changes_json, ip_address, user_agent)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $_SESSION['user_id'] ?? null,
+                'ASSIGN_FINE',
+                'violations',
+                $id,
+                json_encode(['fine_amount' => $amount, 'due_date' => $dueDate]),
+                $_SERVER['REMOTE_ADDR'] ?? '',
+                $_SERVER['HTTP_USER_AGENT'] ?? ''
+            ]);
+
+            header('Location: /violations/show?id=' . $id . '&success=Fine assigned successfully');
         } else {
             header('Location: /violations?error=Invalid request');
         }

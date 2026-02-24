@@ -105,6 +105,48 @@
     }
     .badge-pass { background: #ecfdf5; color: #059669; }
     .badge-fail { background: #fef2f2; color: #dc2626; }
+
+    /* Modal Styles */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.9);
+        backdrop-filter: blur(5px);
+        padding: 20px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content {
+        max-width: 90%;
+        max-height: 80vh;
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        object-fit: contain;
+    }
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .modal-close:hover { color: #bbb; }
+    .modal-caption {
+        margin-top: 20px;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-align: center;
+    }
 </style>
 
 <div class="row" style="max-width: 1100px; margin: 0 auto;">
@@ -185,7 +227,7 @@
                                     </td>
                                     <td style="text-align: center;">
                                         <?php if (!empty($item['photo_path'])): ?>
-                                            <a href="<?= htmlspecialchars($item['photo_path']) ?>" target="_blank">
+                                            <a href="javascript:void(0)" onclick="openImageModal('<?= htmlspecialchars($item['photo_path']) ?>', '<?= htmlspecialchars($item['requirement_text']) ?>')">
                                                 <img src="<?= htmlspecialchars($item['photo_path']) ?>" class="evidence-img" title="Click to view full image">
                                             </a>
                                         <?php else: ?>
@@ -245,4 +287,30 @@
         </div>
     </div>
 </div>
+
+<!-- Image Modal -->
+<div id="imgModal" class="image-modal" onclick="this.style.display='none'">
+    <span class="modal-close" onclick="document.getElementById('imgModal').style.display='none'">&times;</span>
+    <img id="modalImg" class="modal-content">
+    <div id="modalCaption" class="modal-caption"></div>
+</div>
+
+<script>
+function openImageModal(imgSrc, caption) {
+    const modal = document.getElementById('imgModal');
+    const modalImg = document.getElementById('modalImg');
+    const captionText = document.getElementById('modalCaption');
+    
+    modal.style.display = "flex";
+    modalImg.src = imgSrc;
+    captionText.innerHTML = caption;
+}
+
+// Close on escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+        document.getElementById('imgModal').style.display = "none";
+    }
+});
+</script>
 

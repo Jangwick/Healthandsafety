@@ -119,6 +119,7 @@
                         <thead>
                             <tr style="background: rgba(0,0,0,0.02);">
                                 <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 700; color: var(--text-secondary-1); text-transform: uppercase;">Requirement</th>
+                                <th style="padding: 1rem 1.5rem; text-align: center; font-size: 0.7rem; font-weight: 700; color: var(--text-secondary-1); text-transform: uppercase; width: 100px;">Evidence</th>
                                 <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 700; color: var(--text-secondary-1); text-transform: uppercase;">Status</th>
                                 <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 700; color: var(--text-secondary-1); text-transform: uppercase;">Inspector Remarks</th>
                             </tr>
@@ -126,7 +127,7 @@
                         <tbody>
                             <?php if (empty($failedItems)): ?>
                                 <tr>
-                                    <td colspan="3" style="padding: 3rem; text-align: center; color: var(--text-secondary-1);">No specific items flagged.</td>
+                                    <td colspan="4" style="padding: 3rem; text-align: center; color: var(--text-secondary-1);">No specific items flagged.</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($failedItems as $item): ?>
@@ -134,6 +135,17 @@
                                         <td style="padding: 1.25rem 1.5rem;">
                                             <div style="font-weight: 600; color: var(--text-color-1); margin-bottom: 0.25rem;"><?= htmlspecialchars($item['requirement_text']) ?></div>
                                             <div style="font-size: 0.75rem; color: var(--text-secondary-1);">Item ID: <?= $item['checklist_item_id'] ?></div>
+                                        </td>
+                                        <td style="padding: 1.25rem 1.5rem; text-align: center;">
+                                            <?php if (!empty($item['photo_path'])): ?>
+                                                <a href="<?= htmlspecialchars($item['photo_path']) ?>" target="_blank">
+                                                    <img src="<?= htmlspecialchars($item['photo_path']) ?>" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb;">
+                                                </a>
+                                            <?php else: ?>
+                                                <div style="width: 45px; height: 45px; background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #9ca3af;">
+                                                    <i class="fas fa-camera-slash" style="font-size: 0.8rem;"></i>
+                                                </div>
+                                            <?php endif; ?>
                                         </td>
                                         <td style="padding: 1.25rem 1.5rem;">
                                             <span style="background: #fee2e2; color: #991b1b; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Fail</span>
@@ -169,7 +181,11 @@
 
                 <div style="text-align: center; margin-bottom: 2rem;">
                     <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-secondary-1); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">Total Assessed Fine</label>
-                    <div style="font-size: 3rem; font-weight: 800; color: #ef4444; line-height: 1; margin-bottom: 1rem;"><?= number_format((float)$violation['fine_amount'], 2) ?></div>
+                    <?php if ($violation['fine_amount'] > 0): ?>
+                        <div style="font-size: 3rem; font-weight: 800; color: #ef4444; line-height: 1; margin-bottom: 0.5rem;"><?= number_format((float)$violation['fine_amount'], 2) ?></div>
+                    <?php else: ?>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: #94a3b8; line-height: 1; margin: 1rem 0; padding: 1rem; background: #f1f5f9; border-radius: 8px; border: 1px dashed #cbd5e1;">Awaiting Fine</div>
+                    <?php endif; ?>
                     
                     <?php
                     $statusStyle = match($violation['status']) {
@@ -184,6 +200,32 @@
                         Status: <?= $violation['status'] ?>
                     </div>
                 </div>
+
+                <!-- Fine Assignment Form -->
+                <?php if ($violation['fine_amount'] == 0): ?>
+                    <div style="background: #fff8f8; border: 1px solid #fee2e2; padding: 1.25rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                        <h4 style="margin: 0 0 1rem; font-size: 0.875rem; font-weight: 700; color: #991b1b; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-gavel"></i> Assign Penalty
+                        </h4>
+                        <form action="/violations/assign-fine" method="POST">
+                            <input type="hidden" name="id" value="<?= $violation['id'] ?>">
+                            <div style="margin-bottom: 1rem;">
+                                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary-1); margin-bottom: 0.4rem;">Fine Amount (PHP)</label>
+                                <div style="position: relative;">
+                                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-weight: 600; color: #64748b;">₱</span>
+                                    <input type="number" name="fine_amount" required step="0.01" value="5000.00" style="width: 100%; padding: 0.6rem 1rem 0.6rem 2rem; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 700;">
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 1.25rem;">
+                                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary-1); margin-bottom: 0.4rem;">Payment Due Date</label>
+                                <input type="date" name="due_date" required value="<?= date('Y-m-d', strtotime('+7 days')) ?>" style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                            </div>
+                            <button type="submit" class="btn btn-danger" style="width: 100%; padding: 0.75rem; border-radius: 8px; font-weight: 700; background: #ef4444; border: none;">
+                                Submit Fine
+                            </button>
+                        </form>
+                    </div>
+                <?php endif; ?>
 
                 <div style="border-top: 1px solid var(--border-color-1); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
                     <?php if ($violation['status'] === 'Pending'): ?>

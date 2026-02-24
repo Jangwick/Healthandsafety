@@ -66,6 +66,8 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new ViolationController())->show((int)($_GET['id'] ?? 0));
 } elseif ($requestUri === '/violations/update-status' && $method === 'POST') {
     (new ViolationController())->updateStatus();
+} elseif ($requestUri === '/violations/assign-fine' && $method === 'POST') {
+    (new ViolationController())->assignFine();
 } elseif ($requestUri === '/violations/delete') {
     (new ViolationController())->delete();
 } elseif ($requestUri === '/violations/print') {
