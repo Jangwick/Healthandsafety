@@ -1,198 +1,190 @@
 <?php
 $contact = json_decode($establishment['contact_json'] ?? '{}', true);
-
-// Calculate some quick stats from history for the UI
-$totalInspections = count($history);
-$completedInspections = array_filter($history, fn($h) => $h['status'] === 'Completed');
-$avgScore = count($completedInspections) > 0 
-    ? array_sum(array_map(fn($h) => $h['score'], $completedInspections)) / count($completedInspections) 
-    : 0;
-$latestResult = !empty($history) ? $history[0] : null;
 ?>
+<div class="row">
+    <!-- Establishment Details Card -->
+    <div class="col-lg-4 col-md-12">
+        <div class="card mb-4">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-info-circle me-2 text-primary"></i>
+                <h5 class="mb-0" style="font-weight: 700;">Establishment Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="detail-container">
+                    <!-- Status -->
+                    <div class="detail-item mb-4">
+                        <label class="text-secondary small fw-bold text-uppercase d-block mb-1">Current Status</label>
+                        <span class="status-badge status-<?= strtolower($establishment['status']) ?>" style="padding: 0.5rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.85rem;">
+                            <i class="fas fa-circle me-1" style="font-size: 8px; vertical-align: middle;"></i>
+                            <?= $establishment['status'] ?>
+                        </span>
+                    </div>
 
-<div class="establishment-view-container">
-    <!-- Header Section with Stats -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, var(--primary-color-1) 0%, var(--secondary-color-1) 100%); border-radius: 16px;">
-                <div class="card-body p-4 text-white">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                        <div>
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb mb-2" style="--bs-breadcrumb-divider-color: rgba(255,255,255,0.7);">
-                                    <li class="breadcrumb-item"><a href="/establishments" class="text-white-50 text-decoration-none">Establishments</a></li>
-                                    <li class="breadcrumb-item active text-white" aria-current="page">View Details</li>
-                                </ol>
-                            </nav>
-                            <h2 class="fw-bold mb-0"><?= htmlspecialchars($establishment['name']) ?></h2>
-                            <p class="opacity-75 mb-0"><i class="fas fa-map-marker-alt me-1"></i> <?= htmlspecialchars($establishment['location'] ?? 'Location not specified') ?></p>
-                        </div>
-                        <div class="d-flex gap-4 text-center">
-                            <div class="stat-item">
-                                <div class="h4 fw-bold mb-0"><?= $totalInspections ?></div>
-                                <div class="small opacity-75 text-uppercase fw-bold" style="font-size: 0.65rem;">Total Audits</div>
-                            </div>
-                            <div class="stat-item" style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 1.5rem;">
-                                <div class="h4 fw-bold mb-0"><?= number_format($avgScore, 1) ?>%</div>
-                                <div class="small opacity-75 text-uppercase fw-bold" style="font-size: 0.65rem;">Avg Score</div>
-                            </div>
-                            <div class="stat-item" style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 1.5rem;">
-                                <div class="h4 fw-bold mb-0"><?= $establishment['type'] ?></div>
-                                <div class="small opacity-75 text-uppercase fw-bold" style="font-size: 0.65rem;">Category</div>
+                    <!-- Grid for Info -->
+                    <div class="row g-3">
+                        <div class="col-12 mb-2">
+                            <div class="d-flex align-items-start">
+                                <span class="detail-icon bg-light rounded-circle p-2 me-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-tag text-primary small"></i>
+                                </span>
+                                <div>
+                                    <label class="text-secondary small fw-bold text-uppercase d-block">Business Type</label>
+                                    <span class="fw-medium text-color-1"><?= htmlspecialchars($establishment['type']) ?></span>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="col-12 mb-2">
+                            <div class="d-flex align-items-start">
+                                <span class="detail-icon bg-light rounded-circle p-2 me-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-user-tie text-primary small"></i>
+                                </span>
+                                <div>
+                                    <label class="text-secondary small fw-bold text-uppercase d-block">Owner / Manager</label>
+                                    <span class="fw-medium text-color-1"><?= htmlspecialchars($contact['owner'] ?? 'N/A') ?></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-2">
+                            <div class="d-flex align-items-start">
+                                <span class="detail-icon bg-light rounded-circle p-2 me-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-phone text-primary small"></i>
+                                </span>
+                                <div>
+                                    <label class="text-secondary small fw-bold text-uppercase d-block">Contact Number</label>
+                                    <span class="fw-medium text-color-1"><?= htmlspecialchars($contact['phone'] ?? 'N/A') ?></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-2">
+                            <div class="d-flex align-items-start">
+                                <span class="detail-icon bg-light rounded-circle p-2 me-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-envelope text-primary small"></i>
+                                </span>
+                                <div>
+                                    <label class="text-secondary small fw-bold text-uppercase d-block">Email Address</label>
+                                    <span class="fw-medium text-color-1"><?= htmlspecialchars($contact['email'] ?? 'N/A') ?></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex align-items-start">
+                                <span class="detail-icon bg-light rounded-circle p-2 me-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-map-marker-alt text-primary small"></i>
+                                </span>
+                                <div>
+                                    <label class="text-secondary small fw-bold text-uppercase d-block">Full Address</label>
+                                    <span class="fw-medium text-color-1"><?= htmlspecialchars($establishment['location'] ?? 'No address provided') ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-top">
+                    <div class="d-flex flex-column gap-2">
+                        <a href="/establishments/edit?id=<?= $establishment['id'] ?>" class="btn btn-secondary w-100 justify-content-center">
+                            <i class="fas fa-edit"></i> Update Records
+                        </a>
+                        <a href="/inspections/create?establishment_id=<?= $establishment['id'] ?>" class="btn btn-primary w-100 justify-content-center">
+                            <i class="fas fa-plus"></i> Schedule New Audit
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <!-- Sidebar: Establishment Info -->
-        <div class="col-lg-4 col-md-12 mb-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
-                <div class="card-header bg-transparent border-0 pt-4 px-4">
-                    <h5 class="fw-bold mb-0">Business Profile</h5>
-                </div>
-                <div class="card-body px-4">
-                    <div class="info-list">
-                        <!-- Status Section -->
-                        <div class="info-group mb-4">
-                            <label class="text-secondary small fw-bold text-uppercase d-block mb-2">Registration Status</label>
-                            <span class="status-badge status-<?= strtolower($establishment['status']) ?>" style="padding: 0.5rem 1.25rem; font-size: 0.85rem;">
-                                <i class="fas fa-circle me-2" style="font-size: 8px;"></i> <?= $establishment['status'] ?>
-                            </span>
-                        </div>
-
-                        <!-- Details Grid -->
-                        <div class="info-item mb-4">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-user-circle text-primary me-2"></i>
-                                <span class="text-secondary small fw-bold text-uppercase">Owner / Representative</span>
-                            </div>
-                            <div class="fw-medium ps-4"><?= htmlspecialchars($contact['owner'] ?? 'Not set') ?></div>
-                        </div>
-
-                        <div class="info-item mb-4">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-phone-alt text-primary me-2"></i>
-                                <span class="text-secondary small fw-bold text-uppercase">Direct Contact</span>
-                            </div>
-                            <div class="fw-medium ps-4"><?= htmlspecialchars($contact['phone'] ?? 'N/A') ?></div>
-                        </div>
-
-                        <div class="info-item mb-4">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-envelope text-primary me-2"></i>
-                                <span class="text-secondary small fw-bold text-uppercase">Email Address</span>
-                            </div>
-                            <div class="fw-medium ps-4 text-break"><?= htmlspecialchars($contact['email'] ?? 'Not provided') ?></div>
-                        </div>
-
-                        <div class="info-item mb-4">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-clock text-primary me-2"></i>
-                                <span class="text-secondary small fw-bold text-uppercase">Last Activity</span>
-                            </div>
-                            <div class="fw-medium ps-4">
-                                <?= $latestResult ? date('M d, Y', strtotime($latestResult['scheduled_date'])) : 'No history yet' ?>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="action-buttons mt-5 pt-4 border-top d-grid gap-2">
-                        <a href="/establishments/edit?id=<?= $establishment['id'] ?>" class="btn btn-outline-primary py-2 fw-bold">
-                            <i class="fas fa-edit me-2"></i> Edit Profile
-                        </a>
-                        <a href="/inspections/create?establishment_id=<?= $establishment['id'] ?>" class="btn btn-primary py-2 fw-bold shadow-sm">
-                            <i class="fas fa-plus me-2"></i> Schedule Audit
-                        </a>
-                    </div>
+    <!-- Inspection History Table Card -->
+    <div class="col-lg-8 col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-history me-2 text-primary"></i>
+                    <h5 class="mb-0" style="font-weight: 700;">Audit & Inspection History</h5>
                 </div>
             </div>
-        </div>
-
-        <!-- Main Content: Audit History -->
-        <div class="col-lg-8 col-md-12">
-            <div class="card border-0 shadow-sm" style="border-radius: 16px;">
-                <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0">Audit History</h5>
-                    <button class="btn btn-sm btn-light" title="Export History">
-                        <i class="fas fa-download text-secondary"></i>
-                    </button>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" id="auditHistoryTable">
-                            <thead class="bg-light">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead style="background: rgba(0,0,0,0.02);">
+                            <tr>
+                                <th class="ps-4 border-0 py-3 text-secondary small fw-bold text-uppercase">Audit Date</th>
+                                <th class="border-0 py-3 text-secondary small fw-bold text-uppercase">Assigned Inspector</th>
+                                <th class="border-0 py-3 text-secondary small fw-bold text-uppercase">Score</th>
+                                <th class="border-0 py-3 text-secondary small fw-bold text-uppercase">Result</th>
+                                <th class="text-end pe-4 border-0 py-3 text-secondary small fw-bold text-uppercase">Report</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($history)): ?>
                                 <tr>
-                                    <th class="ps-4 py-3 border-0 text-secondary small fw-bold text-uppercase" style="width: 25%;">Audit Date</th>
-                                    <th class="py-3 border-0 text-secondary small fw-bold text-uppercase" style="width: 30%;">Inspector</th>
-                                    <th class="py-3 border-0 text-secondary small fw-bold text-uppercase" style="width: 15%;">Score</th>
-                                    <th class="py-3 border-0 text-secondary small fw-bold text-uppercase" style="width: 15%;">Result</th>
-                                    <th class="text-end pe-4 py-3 border-0 text-secondary small fw-bold text-uppercase" style="width: 15%;">Action</th>
+                                    <td colspan="5" class="text-center py-5">
+                                        <div class="py-4">
+                                            <i class="fas fa-clipboard-list fa-3x mb-3 text-secondary opacity-25"></i>
+                                            <p class="text-secondary">No inspection history found for this establishment.</p>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (empty($history)): ?>
-                                    <tr>
-                                        <td colspan="5" class="text-center py-5">
-                                            <div class="py-4">
-                                                <div class="empty-state-icon mb-3">
-                                                    <i class="fas fa-folder-open fa-3x text-light"></i>
+                            <?php else: ?>
+                                <?php foreach ($history as $audit): ?>
+                                    <tr style="transition: background 0.2s;">
+                                        <td class="ps-4 py-3 align-middle">
+                                            <span class="d-block fw-bold"><?= date('M d, Y', strtotime($audit['scheduled_date'])) ?></span>
+                                            <span class="text-secondary small"><?= date('h:i A', strtotime($audit['scheduled_date'])) ?></span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 10px;">
+                                                    <?= strtoupper(substr($audit['inspector_name'], 0, 1)) ?>
                                                 </div>
-                                                <h6 class="text-secondary fw-bold">No Audit Records Found</h6>
-                                                <p class="text-muted small">This establishment has not been inspected yet.</p>
+                                                <span class="fw-medium"><?= htmlspecialchars($audit['inspector_name']) ?></span>
                                             </div>
                                         </td>
-                                    </tr>
-                                <?php else: ?>
-                                    <?php foreach ($history as $audit): ?>
-                                        <tr>
-                                            <td class="ps-4">
-                                                <div class="fw-bold"><?= date('M d, Y', strtotime($audit['scheduled_date'])) ?></div>
-                                                <div class="text-muted extra-small"><?= date('h:i A', strtotime($audit['scheduled_date'])) ?></div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm bg-primary-subtle text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.75rem;">
-                                                        <?= strtoupper(substr($audit['inspector_name'], 0, 1)) ?>
-                                                    </div>
-                                                    <div class="fw-medium text-truncate" style="max-width: 150px;" title="<?= htmlspecialchars($audit['inspector_name']) ?>">
-                                                        <?= htmlspecialchars($audit['inspector_name']) ?>
+                                        <td class="align-middle">
+                                            <?php if ($audit['status'] === 'Completed'): ?>
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-bold <?= $audit['score'] >= 75 ? 'text-success' : 'text-danger' ?>" style="font-size: 1.1rem;">
+                                                        <?= number_format((float)$audit['score'], 1) ?>%
+                                                    </span>
+                                                    <div class="progress mt-1" style="height: 4px; width: 60px; background: rgba(0,0,0,0.05);">
+                                                        <div class="progress-bar <?= $audit['score'] >= 75 ? 'bg-success' : 'bg-danger' ?>" style="width: <?= $audit['score'] ?>%"></div>
                                                     </div>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <?php if ($audit['status'] === 'Completed'): ?>
-                                                    <div class="d-flex flex-column">
-                                                        <span class="fw-bold <?= $audit['score'] >= 75 ? 'text-success' : 'text-danger' ?>">
-                                                            <?= number_format((float)$audit['score'], 1) ?>%
-                                                        </span>
-                                                        <div class="progress" style="height: 3px; width: 40px;">
-                                                            <div class="progress-bar <?= $audit['score'] >= 75 ? 'bg-success' : 'bg-danger' ?>" style="width: <?= $audit['score'] ?>%"></div>
-                                                        </div>
-                                                    </div>
-                                                <?php else: ?>
-                                                    <span class="text-muted small">Pending</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <span class="status-badge status-<?= strtolower($audit['status']) ?>" style="padding: 0.25rem 0.75rem; font-size: 0.7rem;">
-                                                    <?= $audit['status'] ?>
-                                                </span>
-                                            </td>
-                                            <td class="text-end pe-4 text-nowrap">
-                                                <a href="/inspections/show?id=<?= $audit['id'] ?>" class="btn btn-link btn-sm text-primary p-0">
-                                                    <i class="fas fa-arrow-right"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                            <?php else: ?>
+                                                <span class="text-secondary">--</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="align-middle">
+                                            <?php
+                                                $statusColor = 'primary';
+                                                $statusIcon = 'clock';
+                                                if ($audit['status'] === 'Completed') {
+                                                    $statusColor = 'success';
+                                                    $statusIcon = 'check-circle';
+                                                } elseif ($audit['status'] === 'Cancelled') {
+                                                    $statusColor = 'danger';
+                                                    $statusIcon = 'times-circle';
+                                                }
+                                            ?>
+                                            <span class="badge rounded-pill bg-<?= $statusColor ?>-subtle text-<?= $statusColor ?> border border-<?= $statusColor ?> px-3 py-2" style="font-size: 0.75rem;">
+                                                <i class="fas fa-<?= $statusIcon ?> me-1"></i>
+                                                <?= $audit['status'] ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-end pe-4 align-middle">
+                                            <a href="/inspections/show?id=<?= $audit['id'] ?>" class="btn btn-sm btn-outline-primary" style="padding: 0.4rem 0.8rem; border-radius: 6px;">
+                                                <i class="fas fa-file-alt me-1"></i> View Report
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -200,52 +192,23 @@ $latestResult = !empty($history) ? $history[0] : null;
 </div>
 
 <style>
-.establishment-view-container {
-    padding: 1rem 0;
+.detail-icon {
+    transition: all 0.3s ease;
 }
-.stat-item {
-    min-width: 80px;
+.detail-item:hover .detail-icon {
+    transform: scale(1.1);
+    background: var(--primary-color-1) !important;
 }
-.info-item i {
-    width: 20px;
+.detail-item:hover .detail-icon i {
+    color: white !important;
 }
-.extra-small {
-    font-size: 0.7rem;
-}
-.bg-primary-subtle {
-    background-color: rgba(13, 110, 253, 0.1) !important;
-}
-.text-truncate {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-#auditHistoryTable th {
-    white-space: nowrap;
-}
-#auditHistoryTable td {
-    border-color: rgba(0,0,0,0.03);
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-.empty-state-icon {
-    width: 80px;
-    height: 80px;
-    background: rgba(0,0,0,0.02);
-    border-radius: 50%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.avatar-sm {
-    flex-shrink: 0;
-}
-@media (max-width: 991px) {
-    .stat-item {
-        border-left: none !important;
-        padding-left: 0 !important;
-    }
-}
+.bg-success-subtle { background-color: rgba(25, 135, 84, 0.1) !important; }
+.bg-primary-subtle { background-color: rgba(13, 110, 253, 0.1) !important; }
+.bg-danger-subtle { background-color: rgba(220, 53, 69, 0.1) !important; }
+.text-success { color: #198754 !important; }
+.text-primary { color: #0d6efd !important; }
+.text-danger { color: #dc3545 !important; }
+.border-success { border-color: rgba(25, 135, 84, 0.2) !important; }
+.border-primary { border-color: rgba(13, 110, 253, 0.2) !important; }
+.border-danger { border-color: rgba(220, 53, 69, 0.2) !important; }
 </style>
-

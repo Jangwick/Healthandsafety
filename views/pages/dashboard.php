@@ -74,57 +74,55 @@
         <a href="/inspections" class="btn btn-sm btn-outline-primary" style="padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.875rem; border: 1px solid var(--primary-color-1); color: var(--primary-color-1);">View Reports</a>
     </div>
     <div class="card-body" style="padding: 0;">
-        <div class="table-container" style="border: none; box-shadow: none;">
-            <table class="datatable" style="width: 100%; border-collapse: collapse;">
+        <div class="table-container" style="border: none; box-shadow: none; width: 100%; overflow-x: auto;">
+            <table class="datatable" style="width: 100% !important; border-collapse: separate; border-spacing: 0; table-layout: fixed;">
                 <thead>
-                    <tr style="background: rgba(var(--header-bg-1-rgb), 0.05);">
-                        <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Establishment Name</th>
-                        <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Category</th>
-                        <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Date Scheduled</th>
-                        <th style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1);">Safety Status</th>
+                    <tr style="background: rgba(var(--header-bg-1-rgb), 0.4);">
+                        <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1); letter-spacing: 0.05em; width: 40%;">Establishment Name</th>
+                        <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1); letter-spacing: 0.05em; width: 20%;">Category</th>
+                        <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1); letter-spacing: 0.05em; width: 20%;">Date Scheduled</th>
+                        <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-secondary-1); border-bottom: 2px solid var(--border-color-1); letter-spacing: 0.05em; width: 20%;">Safety Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($recent_inspections)): ?>
                         <tr>
-                            <td colspan="4" style="padding: 4rem 2rem; text-align: center; color: var(--text-secondary-1);">
-                                <div style="opacity: 0.2; margin-bottom: 1rem;">
+                            <td colspan="4" style="padding: 5rem 2rem; text-align: center; color: var(--text-secondary-1);">
+                                <div style="opacity: 0.2; margin-bottom: 1.5rem;">
                                     <i class="fas fa-clipboard-list fa-4x"></i>
                                 </div>
-                                <p style="font-size: 1rem; font-weight: 500;">No inspection logs available yet</p>
-                                <p style="font-size: 0.875rem;">Recently performed inspections will appear here.</p>
+                                <p style="font-size: 1rem; font-weight: 700; color: var(--text-color-1);">No activity records detected</p>
+                                <p style="font-size: 0.85rem; font-weight: 500;">Recently performed inspections will appear here.</p>
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($recent_inspections as $insp): ?>
-                        <tr style="border-bottom: 1px solid var(--border-color-1); transition: background 0.2s;" onmouseover="this.style.background='rgba(var(--primary-color-1-rgb, 76, 138, 137), 0.05)'" onmouseout="this.style.background='transparent'">
-                            <td style="padding: 1rem 1.5rem;">
+                        <tr style="border-bottom: 1px solid var(--border-color-1); transition: background 0.2s;" onmouseover="this.style.background='rgba(var(--primary-color-1-rgb, 76, 138, 137), 0.02)'" onmouseout="this.style.background='transparent'">
+                            <td style="padding: 1.25rem 1.5rem;">
                                 <div style="display: flex; align-items: center;">
-                                    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(76, 138, 137, 0.1); color: var(--primary-color-1); display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
-                                        <i class="fas fa-building" style="font-size: 0.875rem;"></i>
+                                    <div style="width: 34px; height: 34px; border-radius: 10px; background: rgba(76, 138, 137, 0.08); color: var(--primary-color-1); display: flex; align-items: center; justify-content: center; margin-right: 1.25rem; border: 1px solid rgba(76, 138, 137, 0.1);">
+                                        <i class="fas fa-building" style="font-size: 0.85rem;"></i>
                                     </div>
-                                    <div style="font-weight: 600; color: var(--text-color-1); font-size: 0.95rem;"><?= htmlspecialchars($insp['business_name']) ?></div>
+                                    <div style="font-weight: 700; color: var(--text-color-1); font-size: 0.95rem;"><?= htmlspecialchars($insp['business_name']) ?></div>
                                 </div>
                             </td>
-                            <td style="padding: 1rem 1.5rem;">
-                                <span style="font-size: 0.875rem; color: var(--text-secondary-1);"><?= htmlspecialchars($insp['category']) ?></span>
+                            <td style="padding: 1.25rem 1.5rem;">
+                                <span style="font-size: 0.85rem; color: var(--text-secondary-1); font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                                    <i class="fas fa-tag" style="font-size: 0.75rem; opacity: 0.6;"></i>
+                                    <?= htmlspecialchars($insp['category']) ?>
+                                </span>
                             </td>
-                            <td style="padding: 1rem 1.5rem;">
-                                <div style="display: flex; flex-direction: column;">
-                                    <span style="font-size: 0.875rem; color: var(--text-color-1); font-weight: 500;"><?= date('M d, Y', strtotime($insp['scheduled_date'])) ?></span>
-                                    <span style="font-size: 0.75rem; color: var(--text-secondary-1);"><?= htmlspecialchars($insp['inspector_name']) ?></span>
+                            <td style="padding: 1.25rem 1.5rem;">
+                                <div style="display: flex; flex-direction: column; gap: 2px;">
+                                    <span style="font-size: 0.9rem; color: var(--text-color-1); font-weight: 700;"><?= date('M d, Y', strtotime($insp['scheduled_date'])) ?></span>
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary-1); font-style: italic; font-weight: 500;">by <?= htmlspecialchars($insp['inspector_name'] ?? 'System') ?></span>
                                 </div>
                             </td>
-                            <td style="padding: 1rem 1.5rem;">
-                                <?php if ($insp['status'] === 'Completed'): ?>
-                                    <span style="padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(16, 185, 129, 0.1); color: #10b981;">
-                                        <i class="fas fa-check-circle" style="margin-right: 3px;"></i> VERIFIED
-                                    </span>
-                                <?php else: ?>
-                                    <span style="padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
-                                        <i class="fas fa-clock" style="margin-right: 3px;"></i> <?= strtoupper($insp['status']) ?>
-                                    </span>
-                                <?php endif; ?>
+                            <td style="padding: 1.25rem 1.5rem;">
+                                <span class="status-badge status-<?= $insp['status'] === 'Completed' ? 'verified' : strtolower($insp['status']) ?>">
+                                    <i class="fas fa-<?= $insp['status'] === 'Completed' ? 'check-circle' : 'clock' ?>"></i>
+                                    <?= $insp['status'] === 'Completed' ? 'VERIFIED' : $insp['status'] ?>
+                                </span>
                             </td>
                         </tr>
                         <?php endforeach; ?>
