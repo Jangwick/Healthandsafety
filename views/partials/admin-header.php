@@ -34,17 +34,60 @@
             </div>
             
             <div class="notification-item">
-                <button class="notification-btn" aria-label="Notifications">
+                <button class="notification-btn" aria-label="Notifications" id="notificationBtn">
                     <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
+                    <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                 </button>
+                
+                <!-- Notification Modal (Inside Item) -->
+                <div class="notification-modal" id="notificationModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Notifications</h3>
+                            <button class="modal-close" onclick="closeModal('notificationModal')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="notificationModalBody">
+                            <div style="padding: 2rem; text-align: center; color: var(--text-secondary-1);">
+                                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                                <p style="margin-top: 1rem;">Loading notifications...</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="/notifications" class="view-all-link">View All Notifications</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="notification-item">
-                <button class="notification-btn" aria-label="Messages">
+                <button class="notification-btn" aria-label="Messages" id="messageBtn">
                     <i class="fas fa-envelope"></i>
                     <span class="notification-badge">5</span>
                 </button>
+
+                <!-- Message Modal (Inside Item) -->
+                <div class="notification-modal" id="messageModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Messages</h3>
+                            <button class="modal-close" onclick="closeModal('messageModal')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Existing message items... -->
+                            <div style="padding: 2rem; text-align: center; color: var(--text-secondary-1);">
+                                <i class="fas fa-comment-dots fa-2x"></i>
+                                <p style="margin-top: 1rem;">Inbox functionality coming soon.</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#" class="view-all-link">View All Messages</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -59,200 +102,142 @@
                 <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['full_name'] ?? 'Admin User') ?>&background=4c8a89&color=fff&size=128" alt="User Avatar" class="avatar-img">
             </div>
             <i class="fas fa-chevron-down dropdown-icon"></i>
+
+            <!-- User Profile Dropdown (Inside Item) -->
+            <div class="user-profile-dropdown" id="userProfileDropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-user-info">
+                        <div class="dropdown-user-avatar">
+                            <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['full_name'] ?? 'Admin User') ?>&background=4c8a89&color=fff&size=128" alt="User Avatar">
+                        </div>
+                        <div class="dropdown-user-details">
+                            <div class="dropdown-user-name"><?= htmlspecialchars($_SESSION['user']['full_name'] ?? 'Admin User') ?></div>
+                            <div class="dropdown-user-email"><?= htmlspecialchars($_SESSION['user']['email'] ?? 'admin@example.com') ?></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dropdown-body">
+                    <a href="/profile" class="dropdown-item">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="/settings" class="dropdown-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                
+                <div class="dropdown-footer">
+                    <a href="/logout" class="dropdown-item logout-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </header>
 
-<!-- User Profile Dropdown -->
-<div class="user-profile-dropdown" id="userProfileDropdown">
-    <div class="dropdown-header">
-        <div class="dropdown-user-info">
-            <div class="dropdown-user-avatar">
-                <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['full_name'] ?? 'Admin User') ?>&background=4c8a89&color=fff&size=128" alt="User Avatar">
-            </div>
-            <div class="dropdown-user-details">
-                <div class="dropdown-user-name"><?= htmlspecialchars($_SESSION['user']['full_name'] ?? 'Admin User') ?></div>
-                <div class="dropdown-user-email"><?= htmlspecialchars($_SESSION['user']['email'] ?? 'admin@lgu.gov.ph') ?></div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="dropdown-body">
-        <a href="/profile" class="dropdown-item">
-            <i class="fas fa-user"></i>
-            <span>Profile</span>
-        </a>
-        <a href="/settings" class="dropdown-item">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-        </a>
-    </div>
-    
-    <div class="dropdown-footer">
-        <a href="/logout" class="dropdown-item logout-item">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </a>
-    </div>
-</div>
 
-<!-- Notification Modal -->
-<!-- Notification Modal -->
-<div class="notification-modal" id="notificationModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Notifications</h3>
-            <button class="modal-close" onclick="closeModal('notificationModal')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="notification-item">
-                <div class="notification-icon">
-                    <i class="fas fa-info-circle"></i>
-                </div>
-                <div class="notification-details">
-                    <div class="notification-title">System Update</div>
-                    <div class="notification-text">System will be updated tonight at 11 PM</div>
-                    <div class="notification-time">2 hours ago</div>
-                </div>
-            </div>
-            <div class="notification-item">
-                <div class="notification-icon">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-                <div class="notification-details">
-                    <div class="notification-title">New User Registered</div>
-                    <div class="notification-text">John Doe joined the platform</div>
-                    <div class="notification-time">5 hours ago</div>
-                </div>
-            </div>
-            <div class="notification-item">
-                <div class="notification-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <div class="notification-details">
-                    <div class="notification-title">Storage Warning</div>
-                    <div class="notification-text">Disk space is running low (85% used)</div>
-                    <div class="notification-time">1 day ago</div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="view-all-link">View All Notifications</a>
-        </div>
-    </div>
-</div>
-
-<!-- Message Modal -->
-<div class="notification-modal" id="messageModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Messages</h3>
-            <button class="modal-close" onclick="closeModal('messageModal')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="message-item">
-                <div class="message-avatar">
-                    <img src="https://ui-avatars.com/api/?name=Sarah+Smith&background=4c8a89&color=fff&size=64" alt="Sarah Smith">
-                </div>
-                <div class="message-details">
-                    <div class="message-title">Sarah Smith</div>
-                    <div class="message-text">Hey, can you review the latest designs?</div>
-                    <div class="message-time">30 minutes ago</div>
-                </div>
-                <div class="message-status unread"></div>
-            </div>
-            <div class="message-item">
-                <div class="message-avatar">
-                    <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=4c8a89&color=fff&size=64" alt="Mike Johnson">
-                </div>
-                <div class="message-details">
-                    <div class="message-title">Mike Johnson</div>
-                    <div class="message-text">Meeting scheduled for tomorrow at 2 PM</div>
-                    <div class="message-time">2 hours ago</div>
-                </div>
-                <div class="message-status unread"></div>
-            </div>
-            <div class="message-item">
-                <div class="message-avatar">
-                    <img src="https://ui-avatars.com/api/?name=Emily+Brown&background=4c8a89&color=fff&size=64" alt="Emily Brown">
-                </div>
-                <div class="message-details">
-                    <div class="message-title">Emily Brown</div>
-                    <div class="message-text">Thanks for your help with the project!</div>
-                    <div class="message-time">1 day ago</div>
-                </div>
-                <div class="message-status"></div>
-            </div>
-            <div class="message-item">
-                <div class="message-avatar">
-                    <img src="https://ui-avatars.com/api/?name=David+Lee&background=4c8a89&color=fff&size=64" alt="David Lee">
-                </div>
-                <div class="message-details">
-                    <div class="message-title">David Lee</div>
-                    <div class="message-text">Can you send me the report?</div>
-                    <div class="message-time">2 days ago</div>
-                </div>
-                <div class="message-status"></div>
-            </div>
-            <div class="message-item">
-                <div class="message-avatar">
-                    <img src="https://ui-avatars.com/api/?name=Lisa+Wang&background=4c8a89&color=fff&size=64" alt="Lisa Wang">
-                </div>
-                <div class="message-details">
-                    <div class="message-title">Lisa Wang</div>
-                    <div class="message-text">Great job on the presentation!</div>
-                    <div class="message-time">3 days ago</div>
-                </div>
-                <div class="message-status"></div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="view-all-link">View All Messages</a>
-        </div>
-    </div>
-</div>
-
-<!-- Message Content Modal -->
-<div class="message-content-modal" id="messageContentModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <div class="message-header-info">
-                <img id="messageUserAvatar" src="" alt="" class="message-user-avatar">
-                <div class="message-user-info">
-                    <h3 id="messageUserName"></h3>
-                    <span id="messageUserStatus"></span>
-                </div>
-            </div>
-            <button class="modal-close" onclick="closeModal('messageContentModal')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body message-chat-body">
-            <div id="messageContent"></div>
-        </div>
-        <div class="modal-footer message-reply-footer">
-            <div class="message-reply-box">
-                <input type="text" id="messageReplyInput" placeholder="Type a message..." class="message-input">
-                <button class="send-message-btn">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
 // Admin Header functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // --- Dynamic Notifications Logic ---
+    
+    function fetchNotifications() {
+        fetch('/notifications/unread')
+            .then(response => response.json())
+            .then(data => {
+                updateNotificationUI(data.notifications || []);
+            })
+            .catch(error => console.error('Error fetching notifications:', error));
+    }
+
+    function updateNotificationUI(notifications) {
+        const badge = document.getElementById('notificationBadge');
+        const body = document.getElementById('notificationModalBody');
+        if (!badge || !body) return;
+        
+        // Update Badge
+        if (notifications.length > 0) {
+            badge.textContent = notifications.length;
+            badge.style.display = 'flex';
+        } else {
+            badge.style.display = 'none';
+        }
+
+        // Update Modal Content
+        if (notifications.length === 0) {
+            body.innerHTML = `
+                <div style="padding: 3rem 2rem; text-align: center; color: var(--text-secondary-1);">
+                    <i class="fas fa-bell-slash fa-3x" style="opacity: 0.2; margin-bottom: 1rem;"></i>
+                    <p style="font-weight: 600;">No unread notifications</p>
+                </div>
+            `;
+            return;
+        }
+
+        body.innerHTML = notifications.map(notif => `
+            <div class="notification-item" data-id="${notif.id}" onclick="markAsRead(${notif.id}, '${notif.link || '#'}')" style="cursor: pointer;">
+                <div class="notification-icon" style="background: ${getNotificationColor(notif.type)}20; color: ${getNotificationColor(notif.type)}; border: 1px solid ${getNotificationColor(notif.type)}30;">
+                    <i class="${notif.icon || 'fas fa-info-circle'}"></i>
+                </div>
+                <div class="notification-details">
+                    <div class="notification-title">${notif.title}</div>
+                    <div class="notification-text">${notif.message}</div>
+                    <div class="notification-time">${timeAgo(new Date(notif.created_at))}</div>
+                </div>
+                <div class="status-dot" style="background: ${getNotificationColor(notif.type)}"></div>
+            </div>
+        `).join('');
+    }
+
+    function getNotificationColor(type) {
+        switch(type) {
+            case 'success': return '#10b981';
+            case 'warning': return '#f59e0b';
+            case 'error': return '#ef4444';
+            default: return '#3b82f6'; // info
+        }
+    }
+
+    window.markAsRead = function(id, link) {
+        fetch('/notifications/mark-read?id=' + id)
+            .then(() => {
+                fetchNotifications();
+                if (link && link !== '#') {
+                    window.location.href = link;
+                }
+            });
+    };
+
+    function timeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        let interval = seconds / 31536000;
+        if (interval > 1) return Math.floor(interval) + " years ago";
+        interval = seconds / 2592000;
+        if (interval > 1) return Math.floor(interval) + " months ago";
+        interval = seconds / 86400;
+        if (interval > 1) return Math.floor(interval) + " days ago";
+        interval = seconds / 3600;
+        if (interval > 1) return Math.floor(interval) + " hours ago";
+        interval = seconds / 60;
+        if (interval > 1) return Math.floor(interval) + " minutes ago";
+        return Math.floor(seconds) + " seconds ago";
+    }
+
+    // Initial Fetch
+    fetchNotifications();
+    setInterval(fetchNotifications, 30000); // Check every 30s
+
+    // --- Original UI Functionality ---
+    
     // Theme Toggle Logic
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
     
-    // Check for saved theme preference
     const currentTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', currentTheme);
     updateThemeIcon(currentTheme);
@@ -261,7 +246,6 @@ document.addEventListener('DOMContentLoaded', function() {
         themeToggleBtn.addEventListener('click', function() {
             let theme = document.documentElement.getAttribute('data-theme');
             let newTheme = theme === 'dark' ? 'light' : 'dark';
-            
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateThemeIcon(newTheme);
@@ -271,55 +255,23 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateThemeIcon(theme) {
         if (!themeIcon) return;
         if (theme === 'dark') {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
         } else {
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
+            themeIcon.classList.replace('fa-sun', 'fa-moon');
         }
     }
 
+    // Menu Toggle
     const menuToggle = document.getElementById('menuToggle');
-    
-    // Toggle sidebar from header menu button
     if (menuToggle) {
         menuToggle.addEventListener('click', function() {
-            // Use the global sidebarToggle function exposed by sidebar.php
             if (typeof window.sidebarToggle === 'function') {
                 window.sidebarToggle();
-            } else {
-                console.warn('Sidebar toggle function not found. Make sure sidebar.php is included before admin-header.php');
             }
         });
     }
-    
-    // Search functionality
-    const searchInput = document.querySelector('.search-input');
-    const searchBtn = document.querySelector('.search-btn');
-    
-    if (searchBtn) {
-        searchBtn.addEventListener('click', function() {
-            if (searchInput) {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    console.log('Searching for:', searchTerm);
-                }
-            }
-        });
-    }
-    
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    console.log('Searching for:', searchTerm);
-                }
-            }
-        });
-    }
-    
-    // Notification button interactions
+
+    // Generic Modal Toggling
     const notificationBtns = document.querySelectorAll('.admin-header .notification-btn');
     notificationBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
@@ -328,56 +280,37 @@ document.addEventListener('DOMContentLoaded', function() {
             const ariaLabel = this.getAttribute('aria-label');
             
             if (ariaLabel === 'Notifications') {
-                const modal = document.getElementById('notificationModal');
-                const messageModal = document.getElementById('messageModal');
-                const messageContentModal = document.getElementById('messageContentModal');
-                const messageBtn = document.querySelector('.notification-btn[aria-label="Messages"]');
-                
-                // Remove active class from message button
-                if (messageBtn) messageBtn.classList.remove('active');
-                
-                // Close other modals first
-                if (messageModal) messageModal.classList.remove('show');
-                if (messageContentModal) messageContentModal.classList.remove('show');
-                
-                // Toggle notification modal and active state
-                if (modal.classList.contains('show')) {
-                    modal.classList.remove('show');
-                    this.classList.remove('active');
-                    document.body.style.overflow = '';
-                } else {
-                    modal.classList.add('show');
-                    this.classList.add('active');
-                    document.body.style.overflow = '';
-                }
+                toggleModal('notificationModal', this);
+                closeModal('messageModal');
             } else if (ariaLabel === 'Messages') {
-                const modal = document.getElementById('messageModal');
-                const notificationModal = document.getElementById('notificationModal');
-                const messageContentModal = document.getElementById('messageContentModal');
-                const notificationBtn = document.querySelector('.notification-btn[aria-label="Notifications"]');
-                
-                // Remove active class from notification button
-                if (notificationBtn) notificationBtn.classList.remove('active');
-                
-                // Close other modals first
-                if (notificationModal) notificationModal.classList.remove('show');
-                if (messageContentModal) messageContentModal.classList.remove('show');
-                
-                // Toggle message modal and active state
-                if (modal.classList.contains('show')) {
-                    modal.classList.remove('show');
-                    this.classList.remove('active');
-                    document.body.style.overflow = '';
-                } else {
-                    modal.classList.add('show');
-                    this.classList.add('active');
-                    document.body.style.overflow = '';
-                }
+                toggleModal('messageModal', this);
+                closeModal('notificationModal');
             }
         });
     });
-    
-    // User profile dropdown functionality
+
+    function toggleModal(modalId, btn) {
+        const modal = document.getElementById(modalId);
+        if (modal.classList.contains('show')) {
+            modal.classList.remove('show');
+            btn.classList.remove('active');
+        } else {
+            modal.classList.add('show');
+            btn.classList.add('active');
+            // Close other elements
+            const userProfileDropdown = document.getElementById('userProfileDropdown');
+            if (userProfileDropdown) userProfileDropdown.classList.remove('show');
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.classList.remove('show');
+        const btn = document.querySelector(`.notification-btn[aria-label="${modalId.replace('Modal', 's')}"]`);
+        if (btn) btn.classList.remove('active');
+    }
+
+    // User Profile Dropdown
     const userProfileBtn = document.getElementById('userProfileBtn');
     const userProfileDropdown = document.getElementById('userProfileDropdown');
     
@@ -385,208 +318,37 @@ document.addEventListener('DOMContentLoaded', function() {
         userProfileBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
-            // Close all modals first (except message content modal)
+            userProfileDropdown.classList.toggle('show');
+            userProfileBtn.classList.toggle('active');
+            // Close other modals
             const notificationModal = document.getElementById('notificationModal');
             const messageModal = document.getElementById('messageModal');
-            const messageContentModal = document.getElementById('messageContentModal');
-            
             if (notificationModal) notificationModal.classList.remove('show');
             if (messageModal) messageModal.classList.remove('show');
-            // Don't close messageContentModal - let it stay open like Facebook chat
-            
-            // Remove active states from notification buttons
-            const notificationBtn = document.querySelector('.notification-btn[aria-label="Notifications"]');
-            const messageBtn = document.querySelector('.notification-btn[aria-label="Messages"]');
-            if (notificationBtn) notificationBtn.classList.remove('active');
-            if (messageBtn) messageBtn.classList.remove('active');
-            
-            // Toggle user profile dropdown and active state
-            const isOpen = userProfileDropdown.classList.contains('show');
-            userProfileDropdown.classList.toggle('show');
-            userProfileBtn.classList.toggle('active', !isOpen);
         });
     }
-    
-    // Close modals when clicking outside
+
+    // Close all when clicking outside
     document.addEventListener('click', function(e) {
-        const notificationModal = document.getElementById('notificationModal');
-        const messageModal = document.getElementById('messageModal');
-        const messageContentModal = document.getElementById('messageContentModal');
-        const userProfileDropdown = document.getElementById('userProfileDropdown');
-        const notificationBtn = document.querySelector('.notification-btn[aria-label="Notifications"]');
-        const messageBtn = document.querySelector('.notification-btn[aria-label="Messages"]');
-        
-        // Close notification modal when clicking outside
-        if (notificationModal && notificationModal.classList.contains('show')) {
-            if (!notificationModal.contains(e.target) && !e.target.closest('.notification-btn[aria-label="Notifications"]')) {
-                notificationModal.classList.remove('show');
-                if (notificationBtn) notificationBtn.classList.remove('active');
-                document.body.style.overflow = '';
-            }
+        if (!e.target.closest('.notification-modal') && !e.target.closest('.notification-btn')) {
+            document.querySelectorAll('.notification-modal').forEach(m => m.classList.remove('show'));
+            document.querySelectorAll('.notification-btn').forEach(b => b.classList.remove('active'));
         }
-        
-        // Close message modal when clicking outside
-        if (messageModal && messageModal.classList.contains('show')) {
-            if (!messageModal.contains(e.target) && !e.target.closest('.notification-btn[aria-label="Messages"]')) {
-                messageModal.classList.remove('show');
-                if (messageBtn) messageBtn.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-        
-        // Close user profile dropdown when clicking outside
-        if (userProfileDropdown && userProfileDropdown.classList.contains('show')) {
-            if (!userProfileDropdown.contains(e.target) && !e.target.closest('#userProfileBtn')) {
-                userProfileDropdown.classList.remove('show');
-                userProfileBtn.classList.remove('active');
-            }
-        }
-        
-        // Message content modal stays open when clicking outside (don't close it)
-    });
-    
-    // Close modals on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeAllModals();
+        if (!e.target.closest('#userProfileDropdown') && !e.target.closest('#userProfileBtn')) {
+            if (userProfileDropdown) userProfileDropdown.classList.remove('show');
+            if (userProfileBtn) userProfileBtn.classList.remove('active');
         }
     });
-    
-    // Modal functions
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.add('show');
-            // Don't hide body scroll for message content modal (Facebook style)
-            if (modalId !== 'messageContentModal') {
-                document.body.style.overflow = 'hidden';
-            }
+
+    // Make utility functions global
+    window.closeModal = function(id) { 
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('show');
+        const btnId = id === 'notificationModal' ? 'notificationBtn' : (id === 'messageModal' ? 'messageBtn' : null);
+        if (btnId) {
+            const btn = document.getElementById(btnId);
+            if (btn) btn.classList.remove('active');
         }
-    }
-    
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-    }
-    
-    function closeAllModals() {
-        const modals = document.querySelectorAll('.notification-modal, .message-content-modal');
-        modals.forEach(modal => {
-            modal.classList.remove('show');
-        });
-        document.body.style.overflow = '';
-    }
-    
-    // Message item interactions
-    const messageItems = document.querySelectorAll('.message-item');
-    messageItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const userName = this.querySelector('.message-title').textContent;
-            const userAvatar = this.querySelector('.message-avatar img').src;
-            const messageText = this.querySelector('.message-text').textContent;
-            const messageTime = this.querySelector('.message-time').textContent;
-            
-            // Remove active state from message button when opening chat
-            const messageBtn = document.querySelector('.notification-btn[aria-label="Messages"]');
-            if (messageBtn) messageBtn.classList.remove('active');
-            
-            // Close message dropdown modal
-            const messageModal = document.getElementById('messageModal');
-            if (messageModal) messageModal.classList.remove('show');
-            
-            // Open message content modal
-            openMessageContent(userName, userAvatar, messageText, messageTime);
-            
-            // Remove unread status
-            const statusDot = this.querySelector('.message-status.unread');
-            if (statusDot) {
-                statusDot.classList.remove('unread');
-            }
-        });
-    });
-    
-    // Message content functions
-    function openMessageContent(userName, userAvatar, lastMessage, messageTime) {
-        const modal = document.getElementById('messageContentModal');
-        const nameElement = document.getElementById('messageUserName');
-        const avatarElement = document.getElementById('messageUserAvatar');
-        const contentElement = document.getElementById('messageContent');
-        const statusElement = document.getElementById('messageUserStatus');
-        
-        // Set user info
-        nameElement.textContent = userName;
-        avatarElement.src = userAvatar;
-        avatarElement.alt = userName;
-        statusElement.textContent = 'Active now';
-        
-        // Create conversation HTML
-        contentElement.innerHTML = `
-            <div class="chat-message received">
-                <div class="message-bubble">${lastMessage}</div>
-                <div class="message-time">${messageTime}</div>
-            </div>
-            <div class="chat-message sent">
-                <div class="message-bubble">Thanks for reaching out! I'll get back to you soon.</div>
-                <div class="message-time">Just now</div>
-            </div>
-        `;
-        
-        // Close message modal and open content modal
-        closeModal('messageModal');
-        modal.classList.add('show');
-        // Don't hide body scroll for Facebook-style chat
-        document.body.style.overflow = '';
-    }
-    
-    // Send message functionality
-    const sendBtn = document.querySelector('.send-message-btn');
-    const messageInput = document.getElementById('messageReplyInput');
-    
-    if (sendBtn && messageInput) {
-        sendBtn.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    }
-    
-    function sendMessage() {
-        const message = messageInput.value.trim();
-        if (message) {
-            const contentElement = document.getElementById('messageContent');
-            const newMessage = document.createElement('div');
-            newMessage.className = 'chat-message sent';
-            newMessage.innerHTML = `
-                <div class="message-bubble">${message}</div>
-                <div class="message-time">Just now</div>
-            `;
-            contentElement.appendChild(newMessage);
-            messageInput.value = '';
-            
-            // Scroll to bottom
-            contentElement.scrollTop = contentElement.scrollHeight;
-        }
-    }
-    
-    // Make functions globally accessible
-    window.openModal = openModal;
-    window.closeModal = closeModal;
-    window.closeAllModals = closeAllModals;
-    
-    // User profile interaction
-    const userProfile = document.querySelector('.admin-header .user-profile');
-    if (userProfile) {
-        userProfile.addEventListener('click', function() {
-            console.log('User profile clicked');
-        });
-    }
+    };
 });
 </script>

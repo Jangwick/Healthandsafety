@@ -13,6 +13,7 @@ use App\Controllers\SettingsController;
 use App\Controllers\ProfileController;
 use App\Controllers\AnalyticsController;
 use App\Controllers\AuditLogController;
+use App\Controllers\NotificationController;
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
@@ -110,6 +111,14 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new AnalyticsController())->export();
 } elseif ($requestUri === '/admin/audit-logs') {
     (new AuditLogController())->index();
+} elseif ($requestUri === '/notifications') {
+    (new NotificationController())->index();
+} elseif ($requestUri === '/notifications/unread') {
+    (new NotificationController())->getUnread();
+} elseif ($requestUri === '/notifications/mark-read') {
+    (new NotificationController())->markAsRead();
+} elseif ($requestUri === '/notifications/mark-all-read') {
+    (new NotificationController())->markAllAsRead();
 } elseif ($requestUri === '/profile') {
     (new ProfileController())->index();
 } elseif ($requestUri === '/profile/update' && $method === 'POST') {
