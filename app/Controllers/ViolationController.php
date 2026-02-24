@@ -89,7 +89,7 @@ class ViolationController extends BaseController
         $this->auth->handle();
         
         $stmt = $this->db->prepare("
-            SELECT v.*, e.name as establishment_name, e.location, i.score, u.full_name as inspector_name
+            SELECT v.*, e.name as establishment_name, e.location, e.type as establishment_type, i.score, u.full_name as inspector_name, i.id as actual_inspection_id
             FROM violations v
             JOIN inspections i ON v.inspection_id = i.id
             JOIN establishments e ON i.establishment_id = e.id
@@ -196,6 +196,29 @@ class ViolationController extends BaseController
             header('Location: /violations/show?id=' . $id . '&success=Fine assigned successfully');
         } else {
             header('Location: /violations?error=Invalid request');
+        }
+        exit;
+    }
+
+    public function claimFine(): void
+    {
+        $this->auth->handle();
+        $id = (int)($_POST['id'] ?? 0);
+        $orNumber = $_POST['or_number'] ?? '';
+
+        if ($id > 0 && !empty($orNumber)) {
+            $stmt = $this->db->prepare("
+                UPDATE violations 
+                SET status = 'Paid', or_number = ?, paid_at = NOW() 
+                WHERE id = ?
+            ");
+            $stmt->execute([$orNumber, $id]);
+
+            $this->logTransaction('CLAIM_FINE', 'violations', $id, ['or_number' => $orNumber, 'new_status' => 'Paid']);
+
+            header('Location: /violations/show?id=' . $id . '&success=Fine claimed successfully with OR #' . $orNumber);
+        } else {
+            header('Location: /violations/show?id=' . $id . '&error=Official Receipt number is required');
         }
         exit;
     }

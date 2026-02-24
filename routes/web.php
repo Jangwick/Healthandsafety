@@ -70,6 +70,8 @@ if ($requestUri === '/' || $requestUri === '/dashboard') {
     (new ViolationController())->updateStatus();
 } elseif ($requestUri === '/violations/assign-fine' && $method === 'POST') {
     (new ViolationController())->assignFine();
+} elseif ($requestUri === '/violations/claim-fine' && $method === 'POST') {
+    (new ViolationController())->claimFine();
 } elseif ($requestUri === '/violations/delete') {
     (new ViolationController())->delete();
 } elseif ($requestUri === '/violations/print') {

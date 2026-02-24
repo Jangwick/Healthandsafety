@@ -127,6 +127,9 @@
                                 <div style="display: flex; flex-direction: column;">
                                     <span style="font-weight: 600; color: var(--text-color-1);"><?= htmlspecialchars($violation['establishment_name']) ?></span>
                                     <small style="color: var(--text-secondary-1); font-size: 0.75rem;">Inspected: <?= date('M d, Y', strtotime($violation['inspection_date'])) ?></small>
+                                    <?php if ($violation['or_number']): ?>
+                                        <small style="color: #10b981; font-size: 0.75rem; font-weight: 700;">OR #: <?= htmlspecialchars($violation['or_number']) ?></small>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                             <td style="padding: 1rem 1.5rem; max-width: 250px;">
