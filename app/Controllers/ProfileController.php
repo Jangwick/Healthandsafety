@@ -20,7 +20,12 @@ class ProfileController extends BaseController {
     public function index() {
         $user = $this->auth->handle();
         
-        $stmt = $this->db->prepare("SELECT id, email, full_name, role_id FROM users WHERE id = ? AND deleted_at IS NULL");
+        $stmt = $this->db->prepare("
+            SELECT u.id, u.email, u.full_name, u.role_id, r.name as role_name 
+            FROM users u
+            JOIN roles r ON u.role_id = r.id
+            WHERE u.id = ? AND u.deleted_at IS NULL
+        ");
         $stmt->execute([$user['id']]);
         $profile = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -39,7 +44,11 @@ class ProfileController extends BaseController {
             'content' => $content,
             'pageTitle' => 'My Profile',
             'pageHeading' => 'My Profile',
-            'user' => $user
+            'user' => $user,
+            'breadcrumb' => [
+                'Account' => '/profile',
+                'Profile Settings' => '/profile'
+            ]
         ]);
     }
 
