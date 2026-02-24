@@ -64,8 +64,9 @@
                     <thead class="bg-light">
                         <tr>
                             <th class="ps-4">Requirement / Regulation</th>
-                            <th style="width: 150px;">Result</th>
-                            <th style="width: 200px;">Compliance Status</th>
+                            <th style="width: 100px;">Evidence</th>
+                            <th style="width: 120px;">Result</th>
+                            <th style="width: 180px;">Compliance Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,12 +77,23 @@
                                     <small class="text-muted">ID: #<?= htmlspecialchars($item['checklist_item_id']) ?></small>
                                 </td>
                                 <td>
-                                    <span class="badge badge-<?= $item['result'] === 'Pass' ? 'success' : 'danger' ?>">
-                                        <?= $item['result'] ?>
+                                    <?php if (!empty($item['photo_path'])): ?>
+                                        <a href="<?= htmlspecialchars($item['photo_path']) ?>" target="_blank">
+                                            <img src="<?= htmlspecialchars($item['photo_path']) ?>" style="height: 45px; width: 45px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color-1); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                        </a>
+                                    <?php else: ?>
+                                        <div style="width: 45px; height: 45px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #94a3b8; border: 1px dashed #cbd5e1;">
+                                            <i class="fas fa-image" style="font-size: 0.9rem;"></i>
+                                        </div>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <span class="badge badge-<?= $item['status'] === 'Pass' ? 'success' : 'danger' ?>">
+                                        <?= $item['status'] ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <?php if ($item['result'] === 'Pass'): ?>
+                                    <?php if ($item['status'] === 'Pass'): ?>
                                         <i class="fas fa-check-circle text-success" style="color: #10b981;"></i> Compliant
                                     <?php else: ?>
                                         <i class="fas fa-times-circle text-danger" style="color: #ef4444;"></i> Non-Compliant

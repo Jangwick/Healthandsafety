@@ -237,14 +237,33 @@ class InspectionController extends BaseController
             $db->beginTransaction();
 
             // 1. Save individual items
-            $stmt = $db->prepare("INSERT INTO inspection_items (inspection_id, checklist_item_id, status) VALUES (?, ?, ?)");
+            $stmt = $db->prepare("INSERT INTO inspection_items (inspection_id, checklist_item_id, status, photo_path) VALUES (?, ?, ?, ?)");
             foreach ($items as $itemId => $result) {
-                $stmt->execute([$inspectionId, (string)$itemId, $result]);
+                $photoPath = null;
+                
+                // Handle file upload for this item
+                if (isset($_FILES['photos']['name'][$itemId]) && $_FILES['photos']['error'][$itemId] === UPLOAD_ERR_OK) {
+                    $uploadDir = __DIR__ . '/../../uploads/inspections/' . $inspectionId;
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    
+                    $fileExtension = pathinfo($_FILES['photos']['name'][$itemId], PATHINFO_EXTENSION);
+                    $fileName = 'item_' . $itemId . '_' . time() . '.' . $fileExtension;
+                    $targetPath = $uploadDir . '/' . $fileName;
+                    $relativePath = '/uploads/inspections/' . $inspectionId . '/' . $fileName;
+                    
+                    if (move_uploaded_file($_FILES['photos']['tmp_name'][$itemId], $targetPath)) {
+                        $photoPath = $relativePath;
+                    }
+                }
+                
+                $stmt->execute([$inspectionId, (string)$itemId, $result, $photoPath]);
             }
 
             // 2. Update inspection record
-            $stmt = $db->prepare("UPDATE inspections SET status = 'Completed', score = ?, rating = ?, completed_at = NOW() WHERE id = ?");
-            $stmt->execute([$score, $rating, $inspectionId]);
+            $stmt = $db->prepare("UPDATE inspections SET status = 'Completed', score = ?, rating = ?, remarks = ?, completed_at = NOW() WHERE id = ?");
+            $stmt->execute([$score, $rating, $remarks, $inspectionId]);
 
             // 3. Get establishment ID
             $stmt = $db->prepare("SELECT establishment_id FROM inspections WHERE id = ?");

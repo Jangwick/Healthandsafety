@@ -19,7 +19,7 @@
 
 <div class="row" style="max-width: 900px; margin: 0 auto;">
     <div class="col-12">
-        <form action="/inspections/process" method="POST">
+        <form action="/inspections/process" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="inspection_id" value="<?= $inspection['id'] ?>">
             
             <!-- Header Info -->
@@ -65,6 +65,26 @@
                                         <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary-1);">
                                             Verify compliance with standard safety protocols and local ordinances.
                                         </p>
+                                        
+                                        <!-- Image Upload Section -->
+                                        <div style="margin-top: 1rem;">
+                                            <input type="file" name="photos[<?= $item['id'] ?>]" accept="image/*" class="photo-input" style="display: none;" id="photo_<?= $item['id'] ?>" onchange="previewPhoto(this, '<?= $item['id'] ?>')">
+                                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                                <button type="button" onclick="document.getElementById('photo_<?= $item['id'] ?>').click()" 
+                                                    style="background: rgba(76, 138, 137, 0.08); color: var(--primary-color-1); border: 1px dashed rgba(76, 138, 137, 0.4); padding: 0.5rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s;">
+                                                    <i class="fas fa-camera"></i> ATTACH PROOF
+                                                </button>
+                                                <div id="preview_container_<?= $item['id'] ?>" style="display: none; align-items: center; gap: 0.75rem; background: white; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid var(--border-color-1); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                                    <div style="position: relative; width: 32px; height: 32px;">
+                                                        <img id="preview_<?= $item['id'] ?>" src="#" alt="Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">
+                                                    </div>
+                                                    <span style="font-size: 0.75rem; color: var(--text-secondary-1); font-weight: 600; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="filename_<?= $item['id'] ?>"></span>
+                                                    <button type="button" onclick="removePhoto('<?= $item['id'] ?>')" style="border: none; background: #fee2e2; color: #ef4444; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.7rem;">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div style="display: flex; gap: 0.5rem;">
                                         <!-- Pass Button (Radio Style) -->
@@ -124,3 +144,29 @@
     border-color: #cbd5e1;
 }
 </style>
+
+<script>
+function previewPhoto(input, itemId) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        const container = document.getElementById('preview_container_' + itemId);
+        const preview = document.getElementById('preview_' + itemId);
+        const filename = document.getElementById('filename_' + itemId);
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            container.style.display = 'flex';
+            filename.textContent = input.files[0].name;
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function removePhoto(itemId) {
+    const input = document.getElementById('photo_' + itemId);
+    const container = document.getElementById('preview_container_' + itemId);
+    input.value = '';
+    container.style.display = 'none';
+}
+</script>

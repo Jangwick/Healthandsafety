@@ -176,6 +176,7 @@ CREATE TABLE `inspections` (
   `priority` enum('Low','Medium','High','Urgent') DEFAULT 'Medium',
   `score` decimal(5,2) DEFAULT 0.00,
   `rating` enum('Excellent','Good','Fair','Poor','Failing') DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
