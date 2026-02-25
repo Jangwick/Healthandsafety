@@ -161,9 +161,40 @@
             color: var(--text-secondary-1);
             font-size: 0.875rem;
         }
+
+        .back-to-home {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color-1);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--card-bg-1);
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color-1);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .back-to-home:hover {
+            transform: translateX(-5px);
+            color: var(--primary-color-1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
+    <a href="/" class="back-to-home">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Home</span>
+    </a>
+
     <div class="login-card">
         <div class="login-header">
             <div class="logo-box">
@@ -204,54 +235,6 @@
 
         <div class="login-footer">
             <p>&copy; <?= date('Y') ?> LGU Health & Safety Protection Bureau</p>
-        </div>
-    </div>
-</body>
-</html>
-<?php exit; ?>        </div>
-
-        <?php 
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        if (isset($_SESSION['error'])): 
-        ?>
-            <div style="background: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; font-size: 0.875rem; text-align: center; border: 1px solid #fecaca;">
-                <?= $_SESSION['error']; unset($_SESSION['error']); ?>
-            </div>
-        <?php endif; ?>
-
-        <form action="/login" method="POST">
-            <div class="form-group">
-                <label for="email" class="form-label">Email Address</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="email" name="email" class="form-control" 
-                           required placeholder="admin@lgu.gov.ph" autofocus>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password" class="form-label">Password</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" name="password" class="form-control" 
-                           required placeholder="••••••••">
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text-secondary-1); cursor: pointer;">
-                    <input type="checkbox" style="width: 1rem; height: 1rem; cursor: pointer;"> Remember me
-                </label>
-                <a href="#" style="font-size: 0.875rem; color: var(--primary-color-1); text-decoration: none; font-weight: 600;">Forgot Password?</a>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-login">
-                Sign In <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
-            </button>
-        </form>
-
-        <div class="login-footer">
-            <p>Local Government Unit - Health & Safety Dept</p>
         </div>
     </div>
 </body>
