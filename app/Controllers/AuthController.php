@@ -80,8 +80,7 @@ class AuthController extends BaseController
 
                 $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@lgu.gov.ph', 'LGU Security');
                 
-                // If you want all OTPs sent to your personal email, you can uncomment the next line
-                // $recipient = 'rabayalawrencejay@gmail.com'; 
+                // Set recipient to the user's email
                 $recipient = $email;
                 
                 $mail->addAddress($recipient);
