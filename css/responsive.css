@@ -1,0 +1,278 @@
+/* ===================================
+   SYSTEM RESPONSIVENESS & COMPONENT STYLES
+   Created to separate mobile/desktop layout logic
+   =================================== */
+
+/* Base Dashboard Component Styles */
+.card-stat-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.stat-label {
+    color: var(--text-secondary-1);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    color: var(--text-color-1);
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+}
+
+.stat-icon-wrapper {
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Color Helpers */
+.bg-soft-primary {
+    background: rgba(76, 138, 137, 0.1);
+    color: var(--primary-color-1);
+}
+
+.bg-soft-info {
+    background: rgba(14, 165, 233, 0.1);
+    color: #0ea5e9;
+}
+
+.bg-soft-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.bg-soft-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.bg-soft-indigo {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
+.stat-footer {
+    font-size: 0.875rem;
+    color: var(--text-secondary-1);
+}
+
+.trend-indicator {
+    font-weight: 600;
+}
+
+.trend-up {
+    color: #10b981;
+}
+
+.trend-down {
+    color: #ef4444;
+}
+
+.trend-neutral {
+    color: #64748b;
+}
+
+.trend-warning {
+    color: #f59e0b;
+}
+
+.trend-text {
+    margin-left: 0.5rem;
+}
+
+/* Table Components */
+.establishment-cell {
+    display: flex;
+    align-items: center;
+}
+
+.est-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(76, 138, 137, 0.08);
+    color: var(--primary-color-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.25rem;
+    border: 1px solid rgba(76, 138, 137, 0.1);
+}
+
+.est-name {
+    font-weight: 700;
+    color: var(--text-color-1);
+    font-size: 0.95rem;
+}
+
+.category-tag {
+    font-size: 0.85rem;
+    color: var(--text-secondary-1);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.date-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.main-date {
+    font-size: 0.9rem;
+    color: var(--text-color-1);
+    font-weight: 700;
+}
+
+.inspector-name {
+    font-size: 0.75rem;
+    color: var(--text-secondary-1);
+    font-style: italic;
+    font-weight: 500;
+}
+
+.empty-table-state {
+    padding: 5rem 2rem !important;
+    text-align: center;
+    color: var(--text-secondary-1);
+}
+
+.empty-icon {
+    opacity: 0.2;
+    margin-bottom: 1.5rem;
+}
+
+.empty-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-color-1);
+    margin-bottom: 0.25rem;
+}
+
+.empty-subtitle {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* --- Desktop Specific (Laptops & Monitors) --- */
+@media (min-width: 1024px) {
+    .main-content {
+        padding: 2rem;
+    }
+
+    /* Grid Layouts */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+}
+
+/* --- Tablet Specific --- */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .main-content {
+        padding: 1.5rem;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+        margin-bottom: 2.5rem;
+    }
+}
+
+/* --- Mobile Specific (Large Phones) --- */
+@media (max-width: 767px) {
+    .main-content {
+        padding: 1rem;
+        margin-top: 60px;
+        /* Header offset */
+    }
+
+    /* Fix table responsiveness */
+    .table-container {
+        margin: 0 -1rem;
+        /* Full width edge-to-edge on mobile */
+        padding: 0 1rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .datatable {
+        min-width: 800px;
+        /* Prevent shrinking too much */
+        table-layout: fixed;
+    }
+
+    /* Dashboard Cards */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+        margin-bottom: 2rem;
+    }
+
+    /* Stat Cards Optimization */
+    .card-lift {
+        padding: 1.25rem !important;
+        border-radius: 12px;
+    }
+
+    .stat-label {
+        font-size: 0.75rem !important;
+    }
+
+    .stat-value {
+        font-size: 1.75rem !important;
+    }
+
+    /* Title Section */
+    .title h1 {
+        font-size: 1.5rem !important;
+        margin-top: 0.5rem;
+    }
+
+    /* Recent inspections card */
+    .card-header {
+        padding: 1rem !important;
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 0.75rem;
+    }
+
+    .card-header h3 {
+        font-size: 1rem !important;
+    }
+
+    .card-header .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+/* --- Small Mobile (Small Phones) --- */
+@media (max-width: 480px) {
+    .stat-value {
+        font-size: 1.5rem !important;
+    }
+
+    .user-profile {
+        padding: 0.25rem !important;
+    }
+}

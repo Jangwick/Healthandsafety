@@ -16,9 +16,9 @@
     <link rel="stylesheet" href="/css/datatables.css">
     <link rel="stylesheet" href="/css/forms.css">
     <link rel="stylesheet" href="/css/textfield.css">
-    <link rel="stylesheet" href="/css/notification-modal.css">
     <link rel="stylesheet" href="/css/message-modal.css">
     <link rel="stylesheet" href="/css/message-content-modal.css">
+    <link rel="stylesheet" href="/css/responsive.css">
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'system';
