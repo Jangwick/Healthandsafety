@@ -50,56 +50,90 @@ class AuthController extends BaseController
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
-        if ($user && password_verify($password, $user['password_hash'])) {
-            $otp = sprintf("%06d", mt_rand(1, 999999));
-            $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
-            
-            $updateStmt = $db->prepare("UPDATE users SET otp_code = ?, otp_expires_at = ? WHERE id = ?");
-            $updateStmt->execute([$otp, $expiresAt, $user['id']]);
-
-            $_SESSION['pending_user'] = [
-                'id' => $user['id'],
-                'full_name' => $user['full_name'],
-                'role' => $user['role_name'],
-                'hierarchy' => $user['hierarchy_level']
-            ];
-            $_SESSION['pending_email'] = $email;
-            
-            // Log OTP for local testing if SMTP fails
-            error_log("OTP for $email is $otp");
-
-            $mail = new PHPMailer(true);
-            try {
-                $mail->isSMTP();
-                $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
-                $mail->SMTPAuth   = true;
-                $mail->Username   = $_ENV['MAIL_USERNAME'] ?? ''; // Put your gmail here
-                $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? ''; // Put your app password here
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port       = $_ENV['MAIL_PORT'] ?? 587;
-
-                $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@lgu.gov.ph', 'LGU Security');
-                
-                // Set recipient to the user's email
-                $recipient = $email;
-                
-                $mail->addAddress($recipient);
-
-                $mail->isHTML(true);
-                $mail->Subject = 'Your Login OTP';
-                $mail->Body    = "Your OTP for login is: <b>$otp</b><br>It expires in 15 minutes.";
-                $mail->AltBody = "Your OTP for login is: $otp \nIt expires in 15 minutes.";
-
-                $mail->send();
-            } catch (Exception $e) {
-                error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
-                $_SESSION['error'] = 'Failed to send OTP email. Mailer Error: ' . $mail->ErrorInfo;
+        if ($user) {
+            // Check for lockout
+            if ($user['lockout_until'] && strtotime($user['lockout_until']) > time()) {
+                $waitMinutes = ceil((strtotime($user['lockout_until']) - time()) / 60);
+                $_SESSION['error'] = "Account locked due to too many failed attempts. Please try again in $waitMinutes minute(s).";
                 header('Location: /login');
                 exit;
             }
-            
-            header('Location: /login/otp');
-            exit;
+
+            if (password_verify($password, $user['password_hash'])) {
+                // Success: Reset failed attempts
+                $resetStmt = $db->prepare("UPDATE users SET login_attempts = 0, lockout_until = NULL WHERE id = ?");
+                $resetStmt->execute([$user['id']]);
+
+                $otp = sprintf("%06d", mt_rand(1, 999999));
+                $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+                
+                $updateStmt = $db->prepare("UPDATE users SET otp_code = ?, otp_expires_at = ? WHERE id = ?");
+                $updateStmt->execute([$otp, $expiresAt, $user['id']]);
+
+                $_SESSION['pending_user'] = [
+                    'id' => $user['id'],
+                    'full_name' => $user['full_name'],
+                    'role' => $user['role_name'],
+                    'hierarchy' => $user['hierarchy_level']
+                ];
+                $_SESSION['pending_email'] = $email;
+                
+                error_log("OTP for $email is $otp");
+
+                $mail = new PHPMailer(true);
+                try {
+                    $mail->isSMTP();
+                    $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = $_ENV['MAIL_USERNAME'] ?? '';
+                    $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? '';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port       = $_ENV['MAIL_PORT'] ?? 587;
+
+                    $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@lgu.gov.ph', 'LGU Security');
+                    $mail->addAddress($email);
+
+                    $mail->isHTML(true);
+                    $mail->Subject = 'Your Login OTP';
+                    $mail->Body    = "Your OTP for login is: <b>$otp</b><br>It expires in 15 minutes.";
+                    $mail->AltBody = "Your OTP for login is: $otp \nIt expires in 15 minutes.";
+
+                    $mail->send();
+                    
+                    header('Location: /login/otp');
+                    exit;
+                } catch (Exception $e) {
+                    error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+                    $_SESSION['error'] = 'Failed to send OTP email. Mailer Error: ' . $mail->ErrorInfo;
+                    header('Location: /login');
+                    exit;
+                }
+            } else {
+                // Wrong password: Increment attempts
+                $attempts = ($user['login_attempts'] ?? 0) + 1;
+                $lockoutUntil = null;
+
+                if ($attempts >= 5) {
+                    // Incremental lockout duration
+                    $minutes = 5;
+                    if ($attempts == 6) $minutes = 15;
+                    if ($attempts == 7) $minutes = 30;
+                    if ($attempts == 8) $minutes = 60;
+                    if ($attempts >= 9) $minutes = 1440; // 24 hours
+
+                    $lockoutUntil = date('Y-m-d H:i:s', strtotime("+$minutes minutes"));
+                    $_SESSION['error'] = "Too many failed attempts. Account locked for $minutes minutes.";
+                } else {
+                    $remaining = 5 - $attempts;
+                    $_SESSION['error'] = "Invalid password. $remaining attempts remaining before lockout.";
+                }
+
+                $updateStmt = $db->prepare("UPDATE users SET login_attempts = ?, lockout_until = ? WHERE id = ?");
+                $updateStmt->execute([$attempts, $lockoutUntil, $user['id']]);
+                
+                header('Location: /login');
+                exit;
+            }
         }
 
         $_SESSION['error'] = 'Invalid email or password.';
