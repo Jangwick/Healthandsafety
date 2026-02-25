@@ -183,7 +183,16 @@
         .back-link:hover {
             text-decoration: underline;
         }
-    </style>
+</style>
+    <script>
+        // Disable back button navigation
+        (function() {
+            window.history.pushState(null, null, window.location.href);
+            window.onpopstate = function() {
+                window.history.pushState(null, null, window.location.href);
+            };
+        })();
+    </script>
 </head>
 <body>
     <div class="login-card">

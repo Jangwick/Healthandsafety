@@ -187,7 +187,16 @@
             color: var(--primary-color-1);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
-    </style>
+</style>
+    <script>
+        // Disable back button navigation for login/otp pages
+        (function() {
+            window.history.pushState(null, null, window.location.href);
+            window.onpopstate = function() {
+                window.history.pushState(null, null, window.location.href);
+            };
+        })();
+    </script>
 </head>
 <body>
     <a href="/" class="back-to-home">
