@@ -39,22 +39,24 @@
                     <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                 </button>
                 
-                <!-- Notification Modal -->
+                <!-- Notification Modal (Inside Item) -->
                 <div class="notification-modal" id="notificationModal">
-                    <div class="modal-header">
-                        <h3>Notifications</h3>
-                        <button class="modal-close" onclick="closeModal('notificationModal')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body" id="notificationModalBody">
-                        <div class="loading-state" style="padding: 3rem 2rem; text-align: center; color: var(--text-secondary-1);">
-                            <i class="fas fa-circle-notch fa-spin fa-2x"></i>
-                            <p style="margin-top: 1rem; font-weight: 500;">Loading notifications...</p>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Notifications</h3>
+                            <button class="modal-close" onclick="closeModal('notificationModal')">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="/notifications" class="view-all-link">View All Notifications</a>
+                        <div class="modal-body" id="notificationModalBody">
+                            <div style="padding: 2rem; text-align: center; color: var(--text-secondary-1);">
+                                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                                <p style="margin-top: 1rem;">Loading notifications...</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="/notifications" class="view-all-link">View All Notifications</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -65,22 +67,25 @@
                     <span class="notification-badge">5</span>
                 </button>
 
-                <!-- Message Modal -->
+                <!-- Message Modal (Inside Item) -->
                 <div class="notification-modal" id="messageModal">
-                    <div class="modal-header">
-                        <h3>Messages</h3>
-                        <button class="modal-close" onclick="closeModal('messageModal')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div style="padding: 3rem 2rem; text-align: center; color: var(--text-secondary-1);">
-                            <i class="fas fa-comment-dots fa-2x" style="opacity: 0.2; margin-bottom: 1rem;"></i>
-                            <p style="font-weight: 600;">Inbox functionality coming soon.</p>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Messages</h3>
+                            <button class="modal-close" onclick="closeModal('messageModal')">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="#" class="view-all-link">View All Messages</a>
+                        <div class="modal-body">
+                            <!-- Existing message items... -->
+                            <div style="padding: 2rem; text-align: center; color: var(--text-secondary-1);">
+                                <i class="fas fa-comment-dots fa-2x"></i>
+                                <p style="margin-top: 1rem;">Inbox functionality coming soon.</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#" class="view-all-link">View All Messages</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,28 +148,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function fetchNotifications() {
         fetch('/notifications/unread')
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                if (data && data.notifications) {
-                    updateNotificationUI(data.notifications);
-                }
+                updateNotificationUI(data.notifications || []);
             })
-            .catch(error => {
-                console.error('Error fetching notifications:', error);
-                const body = document.getElementById('notificationModalBody');
-                if (body && body.innerHTML.includes('fa-spin')) {
-                    body.innerHTML = `
-                        <div style="padding: 2rem; text-align: center; color: var(--text-secondary-1);">
-                            <i class="fas fa-exclamation-circle fa-2x" style="color: #ef4444; margin-bottom: 1rem;"></i>
-                            <p>Unable to load notifications</p>
-                            <button onclick="fetchNotifications()" class="btn btn-sm btn-outline-primary" style="margin-top: 1rem;">Retry</button>
-                        </div>
-                    `;
-                }
-            });
+            .catch(error => console.error('Error fetching notifications:', error));
     }
 
     function updateNotificationUI(notifications) {
@@ -184,9 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (notifications.length === 0) {
             body.innerHTML = `
                 <div style="padding: 3rem 2rem; text-align: center; color: var(--text-secondary-1);">
-                    <i class="fas fa-bell-slash fa-3x" style="opacity: 0.1; margin-bottom: 1.5rem;"></i>
-                    <p style="font-weight: 700; color: var(--text-color-1); font-size: 1rem;">All caught up!</p>
-                    <p style="font-size: 0.85rem;">No unread notifications at the moment.</p>
+                    <i class="fas fa-bell-slash fa-3x" style="opacity: 0.2; margin-bottom: 1rem;"></i>
+                    <p style="font-weight: 600;">No unread notifications</p>
                 </div>
             `;
             return;
@@ -199,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="notification-details">
                     <div class="notification-title">${notif.title}</div>
-                    <div class="notification-text" title="${notif.message}">${notif.message}</div>
+                    <div class="notification-text">${notif.message}</div>
                     <div class="notification-time">${timeAgo(new Date(notif.created_at))}</div>
                 </div>
                 <div class="status-dot" style="background: ${getNotificationColor(notif.type)}"></div>
@@ -212,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'success': return '#10b981';
             case 'warning': return '#f59e0b';
             case 'error': return '#ef4444';
-            default: return '#3b82f6';
+            default: return '#3b82f6'; // info
         }
     }
 
@@ -220,30 +207,25 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/notifications/mark-read?id=' + id)
             .then(() => {
                 fetchNotifications();
-                if (link && link !== '#' && link !== '') {
+                if (link && link !== '#') {
                     window.location.href = link;
                 }
-            })
-            .catch(err => console.error('Error marking as read:', err));
+            });
     };
 
     function timeAgo(date) {
-        if (!date || isNaN(date.getTime())) return 'Just now';
-        
         const seconds = Math.floor((new Date() - date) / 1000);
-        if (seconds < 60) return "Just now";
-        
         let interval = seconds / 31536000;
-        if (interval > 1) return Math.floor(interval) + "y ago";
+        if (interval > 1) return Math.floor(interval) + " years ago";
         interval = seconds / 2592000;
-        if (interval > 1) return Math.floor(interval) + "mo ago";
+        if (interval > 1) return Math.floor(interval) + " months ago";
         interval = seconds / 86400;
-        if (interval > 1) return Math.floor(interval) + "d ago";
+        if (interval > 1) return Math.floor(interval) + " days ago";
         interval = seconds / 3600;
-        if (interval > 1) return Math.floor(interval) + "h ago";
+        if (interval > 1) return Math.floor(interval) + " hours ago";
         interval = seconds / 60;
-        if (interval > 1) return Math.floor(interval) + "m ago";
-        return Math.floor(seconds) + "s ago";
+        if (interval > 1) return Math.floor(interval) + " minutes ago";
+        return Math.floor(seconds) + " seconds ago";
     }
 
     // Initial Fetch
@@ -279,7 +261,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Menu toggle logic is handled by the sidebar component directly to avoid double-firing events.
+    // Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            if (typeof window.sidebarToggle === 'function') {
+                window.sidebarToggle();
+            }
+        });
+    }
 
     // Generic Modal Toggling
     const notificationBtns = document.querySelectorAll('.admin-header .notification-btn');
@@ -316,10 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) modal.classList.remove('show');
-        
-        // Match aria-label case (Notifications/Messages)
-        const label = modalId === 'notificationModal' ? 'Notifications' : 'Messages';
-        const btn = document.querySelector(`.notification-btn[aria-label="${label}"]`);
+        const btn = document.querySelector(`.notification-btn[aria-label="${modalId.replace('Modal', 's')}"]`);
         if (btn) btn.classList.remove('active');
     }
 
