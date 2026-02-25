@@ -261,15 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Menu Toggle
-    const menuToggle = document.getElementById('menuToggle');
-    if (menuToggle) {
-        menuToggle.addEventListener('click', function() {
-            if (typeof window.sidebarToggle === 'function') {
-                window.sidebarToggle();
-            }
-        });
-    }
+    // Menu toggle logic is handled by the sidebar component directly to avoid double-firing events.
 
     // Generic Modal Toggling
     const notificationBtns = document.querySelectorAll('.admin-header .notification-btn');
